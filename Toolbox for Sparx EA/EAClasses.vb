@@ -12,14 +12,14 @@
             pImpactedConcepts = New HashSet(Of Concept)
             firstColonPositionIndex = InStr(FullName, ":")
             If firstColonPositionIndex = 0 Then
-                Call log("Gap <" + FullName + "> does not have impact or character "":"" is missing ", False)
+                lLOG.Error("Gap <" + FullName + "> does not have impact or character "":"" is missing ")
                 pName = FullName
             Else
                 pImpact = Mid(FullName, 1, firstColonPositionIndex - 1)
                 pName = Mid(FullName, firstColonPositionIndex + 1, Len(FullName))
             End If
         Else
-            log("Gap does not have name ", False)
+            lLOG.Error("Gap does not have name ")
         End If
         pId = Id
     End Sub

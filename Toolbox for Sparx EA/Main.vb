@@ -24,24 +24,12 @@ Module Main
         Dim ignoreRow As Boolean = True 'import file from Archi contains names of attributes. I do not need them ...
         Dim i As Integer
 
-        initLog()
-        If sArgs.Length = 0 Then                'If there are no arguments
-            log("<-no arguments passed->")      'Just output Hello World
-        Else                                    'We have some arguments 
-            Dim j As Integer = 0
-
-            While j < sArgs.Length             'So with each argument
-                log("param: " & sArgs(j) + " and its value: " + sArgs(j + 1))       'Print out each item
-                j = j + 2                       'Increment to the next argument
-            End While
-
-        End If
-
+        initApp(sArgs)
 
         EAapp = getApp()
         Repository = getRepository(EAapp)
         If IsNothing(Repository) Then
-            log("Sparx EA has to have opened any repository", True)
+            lLOG.Fatal("Sparx EA has to have opened any repository")
             Exit Sub
         End If
         'read and map elements from ARCHI export
@@ -59,7 +47,7 @@ Module Main
             End If
         Loop
         objFile.Close
-        log(mappedElementsFileARCHI.Count & " Elements have been read")
+        lLOG.Info(mappedElementsFileARCHI.Count & " Elements have been read")
 
         'read and map properties from ARCHI export
         ignoreRow = True
@@ -87,7 +75,7 @@ Module Main
             End If
         Loop
         objFile.Close
-        log(mappedPropertiesFileARCHI.Count & " Elements have Properties and they have been read. And also " & i & " Properties have been read")
+        lLOG.Info(mappedPropertiesFileARCHI.Count & " Elements have Properties and they have been read. And also " & i & " Properties have been read")
         'read and map relations from ARCHI export
         ignoreRow = True
         objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileRelations, 1)
@@ -102,9 +90,20 @@ Module Main
             End If
         Loop
         objFile.Close
-        log(mappedRelationsFileARCHI.Count & " Relations have been read")
+        lLOG.Info(mappedRelationsFileARCHI.Count & " Relations have been read")
         close(EAapp, Repository, False)
-        log("", True)
     End Sub
 
+    Sub initApp(ByRef sArgs As String())
+        If sArgs.Length = 0 Then                'If there are no arguments
+            lLOG.Info("<-no arguments passed->")      'Just output Hello World
+        Else                                    'We have some arguments 
+            Dim j As Integer = 0
+
+            While j < sArgs.Length             'So with each argument
+                lLOG.Info("param: " & sArgs(j) + " and its value: " + sArgs(j + 1))       'Print out each item
+                j = j + 2                       'Increment to the next argument
+            End While
+        End If
+    End Sub
 End Module

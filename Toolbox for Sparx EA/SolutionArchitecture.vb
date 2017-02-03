@@ -10,7 +10,7 @@
         Dim gap As Gap
 
         Repository = EAapp.repository
-        Common.log(Repository.ConnectionString, False)
+        lLOG.Info(Repository.ConnectionString)
 
         Dim TEST As String = "GAP"
         Select Case TEST
@@ -18,23 +18,23 @@
                 element = Repository.GetContextObject()
                 selectedObjectType = Repository.GetContextItemType()
                 If selectedObjectType <> EA.ObjectType.otElement Then
-                    Call log("You have to select element!", True)
+                    lLOG.Fatal("You have to select element!")
                     Exit Sub
                 Else
                     Dim app As String
                     app = getApplicationForComponent(element)
-                    log("For element <" + element.Name + "> is top level owning component <" + app + ">.", False)
+                    lLOG.Info("For element <" + element.Name + "> is top level owning component <" + app + ">.")
                 End If
             Case "GAP"
                 diagram = Repository.GetContextObject()
                 selectedObjectType = Repository.GetContextItemType()
                 If selectedObjectType <> EA.ObjectType.otDiagram Then
-                    Call log("You have to select diagram!", True)
+                    lLOG.Fatal("You have to select diagram!")
                     Exit Sub
                 End If
-                log("Impacts for diagram: " + diagram.Name, False)
+                lLOG.Info("Impacts for diagram: " + diagram.Name)
                 getImpactsForDiagram(diagram, gaps)
-                log(Chr(9) + getPBRForDiagram(diagram), False)
+                lLOG.Info(Chr(9) + getPBRForDiagram(diagram))
                 printGaps(gaps)
                 enumerator = gaps.GetEnumerator()
                 While enumerator.MoveNext
@@ -50,9 +50,9 @@
                 gaps.Clear()
                 'clean up done
             Case Else
-                log("No defined TEST!", False)
+                lLOG.Error("No defined TEST!")
         End Select
-        log("any key to exit", True)
+        lLOG.Info("any key to exit")
     End Sub
     'simply finds for all gaps on the diagram
     Sub getImpactsForDiagram(ByRef diagram As EA.Diagram, ByRef gaps As HashSet(Of Gap))
@@ -77,7 +77,7 @@
 
         For Each connector In Repository.GetElementByID(gap.Id).Connectors
             If connector.Stereotype <> "ArchiMate_Association" Then
-                log("Mistake against methodology. Wrong relationship: " + connector.Stereotype, False + " for gap " + gap.Name)
+                lLOG.Error("Mistake against methodology. Wrong relationship: " + connector.Stereotype + " for gap " + gap.Name)
                 'but do accept it
             End If
             If connector.ClientID = gap.Id Then
@@ -103,7 +103,7 @@
                     app = getApplicationForComponent(component)
                     gap.ImpactedConcepts.Add(New Concept(element.Name, element.Stereotype, element.Notes, app))
                 Case Else
-                    log("Unknown stereotype " + element.Stereotype + " for concept " + element.Name, False)
+                    lLOG.Error("Unknown stereotype " + element.Stereotype + " for concept " + element.Name)
             End Select
         Next
     End Sub
@@ -113,11 +113,11 @@
         enumerator = gaps.GetEnumerator()
         Dim gap As Gap
 
-        log("Number of GAPS: " + CStr(gaps.Count), False)
-        Call log("Impact" + Chr(9) + "GAP" + Chr(9) + "Description" + Chr(9), False)
+        lLOG.Info("Number of GAPS: " + CStr(gaps.Count))
+        lLOG.Info("Impact" + Chr(9) + "GAP" + Chr(9) + "Description" + Chr(9))
         While enumerator.MoveNext
             gap = enumerator.Current
-            Call log(gap.Impact + Chr(9) + gap.Name + Chr(9) + gap.Description + Chr(9), False)
+            lLOG.Debug(gap.Impact + Chr(9) + gap.Name + Chr(9) + gap.Description + Chr(9))
         End While
     End Sub
 
@@ -126,11 +126,11 @@
         Dim enumerator As HashSet(Of Concept).Enumerator
         enumerator = gap.ImpactedConcepts.GetEnumerator()
 
-        log("Number of impacts: " + CStr(gap.ImpactedConcepts.Count), False)
-        log("Application" + Chr(9) + "Concept" + Chr(9) + "Name" + Chr(9) + "Impact" + Chr(9) + "GAP", False)
+        lLOG.Info("Number of impacts: " + CStr(gap.ImpactedConcepts.Count))
+        lLOG.Info("Application" + Chr(9) + "Concept" + Chr(9) + "Name" + Chr(9) + "Impact" + Chr(9) + "GAP")
         While enumerator.MoveNext
             concept = enumerator.Current
-            log(concept.Application + Chr(9) + concept.ConceptType + Chr(9) + concept.ConceptName + Chr(9) + gap.Impact + Chr(9) + gap.Name, False)
+            lLOG.Debug(concept.Application + Chr(9) + concept.ConceptType + Chr(9) + concept.ConceptName + Chr(9) + gap.Impact + Chr(9) + gap.Name)
         End While
     End Sub
 
@@ -200,10 +200,10 @@
                     found = True
                     owner = Repository.GetElementByID(connector.ClientID) 'should be function
                     If owner.Stereotype <> stereotypeElementFunction Then
-                        log("Where is function for service " + service.Name + "?. Provided " + owner.Name + " with stereortype " + owner.Stereotype, False)
+                        lLOG.Error("Where is function for service " + service.Name + "?. Provided " + owner.Name + " with stereortype " + owner.Stereotype)
                     End If
                 Else
-                    log("Wrong direction for " + connector.Stereotype + " for service " + service.Name, False)
+                    lLOG.Error("Wrong direction for " + connector.Stereotype + " for service " + service.Name)
                 End If
             End If
         End While
@@ -253,7 +253,7 @@
                 End If
                 found = True
                 If owner.Stereotype <> stereotypeElementComponent Then
-                    log("Where is component for sfunction " + fnction.Name + "?. Provided " + owner.Name + " with stereortype " + owner.Stereotype, False)
+                    lLOG.Error("Where is component for sfunction " + fnction.Name + "?. Provided " + owner.Name + " with stereortype " + owner.Stereotype)
                 End If
             End If
         End While
@@ -315,7 +315,7 @@
                             found = True
                         End If
                     Case Else
-                        log("Unknown desired direction of relation for component: <" + component.Name + ">", 0)
+                        lLOG.Error("Unknown desired direction of relation for component: <" + component.Name + ">")
                 End Select
             End If
         End While
