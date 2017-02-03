@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="ArchiImportDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\Users\david.skarka\Documents\Priv\MTU\</Value>
+    </Setting>
+    <Setting Name="ArchiImportFileElements" Type="System.String" Scope="User">
+      <Value Profile="(Default)">elements.csv</Value>
+    </Setting>
+    <Setting Name="ArchiImportFileProperties" Type="System.String" Scope="User">
+      <Value Profile="(Default)">properties.csv</Value>
+    </Setting>
+    <Setting Name="ArchiImportFileRelations" Type="System.String" Scope="User">
+      <Value Profile="(Default)">relations.csv</Value>
+    </Setting>
+    <Setting Name="ArchiImportFileFormat" Type="System.String" Scope="User">
+      <Value Profile="(Default)">csv</Value>
+    </Setting>
+    <Setting Name="SparxEATargetRepostoryDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\Users\david.skarka\Documents\Priv\MTU\</Value>
+    </Setting>
+    <Setting Name="SparxEATargetRepostoryFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MTU2.eap</Value>
+    </Setting>
+    <Setting Name="SparxEATargetRepostoryFormat" Type="System.String" Scope="User">
+      <Value Profile="(Default)">eap</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
