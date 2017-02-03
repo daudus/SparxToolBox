@@ -7,90 +7,32 @@ Imports System.Collections.Specialized
 
 Module Main
     Dim Repository As EA.Repository
-    Dim EAapp, objFSO, objFile As Object
+    Dim EAapp As Object
     Dim mappedElementsFileARCHI As New Hashtable
     Dim mappedPropertiesFileARCHI As New Hashtable
     Dim mappedRelationsFileARCHI As New Hashtable
 
     Sub Main(ByVal sArgs As String())
-        Dim strLine As String
-        Dim elementsArrayArchi As String()
-        Dim propertiesArrayArchi As String()
-        Dim relationsArrayArchi As String()
-        Dim archiElement As ArchiElement
-        Dim archiRelation As ArchiRelation
-        Dim archiProperty As ArchiProperty
-        Dim archiPropertyArray As ArrayList
-        Dim ignoreRow As Boolean = True 'import file from Archi contains names of attributes. I do not need them ...
-        Dim i As Integer
 
+        'inits app by command line parameters
         initApp(sArgs)
-
+        'gets the Sparx EA application reference
         EAapp = getApp()
+        ' ... and the proper repository
         Repository = getRepository(EAapp)
         If IsNothing(Repository) Then
             lLOG.Fatal("Sparx EA has to have opened any repository")
             Exit Sub
         End If
-        'read and map elements from ARCHI export
-        ignoreRow = True
-        objFSO = CreateObject("Scripting.FileSystemObject")
-        objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileElements, 1)
-        Do While Not objFile.AtEndOfStream
-            strLine = objFile.readline
-            If ignoreRow Then
-                ignoreRow = False
-            Else
-                elementsArrayArchi = Split(Replace(strLine, """", ""), ",")
-                archiElement = New ArchiElement(elementsArrayArchi(0), elementsArrayArchi(1), elementsArrayArchi(2), elementsArrayArchi(3))
-                mappedElementsFileARCHI.Add(elementsArrayArchi(0), archiElement)
-            End If
-        Loop
-        objFile.Close
-        lLOG.Info(mappedElementsFileARCHI.Count & " Elements have been read")
 
+        'read and map elements from ARCHI export
+        mappedElementsFileARCHI = loadElementsFileARCHI()
         'read and map properties from ARCHI export
-        ignoreRow = True
-        i = 0
-        objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileProperties, 1)
-        Do While Not objFile.AtEndOfStream
-            strLine = objFile.readline
-            If ignoreRow Then
-                ignoreRow = False
-            Else
-                i = i + 1
-                propertiesArrayArchi = Split(Replace(strLine, """", ""), ",")
-                archiProperty = New ArchiProperty(propertiesArrayArchi(0), propertiesArrayArchi(1), propertiesArrayArchi(2))
-                'in case of multiple properties per element
-                If mappedPropertiesFileARCHI.ContainsKey(archiProperty.ID) Then
-                    'get array of properties for certain element - it is ID of property ...
-                    archiPropertyArray = mappedPropertiesFileARCHI.Item(archiProperty.ID)
-                Else
-                    'no array of properties found
-                    archiPropertyArray = New ArrayList()
-                    mappedPropertiesFileARCHI.Add(propertiesArrayArchi(0), archiPropertyArray)
-                End If
-                'add next property
-                archiPropertyArray.Add(archiProperty)
-            End If
-        Loop
-        objFile.Close
-        lLOG.Info(mappedPropertiesFileARCHI.Count & " Elements have Properties and they have been read. And also " & i & " Properties have been read")
+        mappedPropertiesFileARCHI = loadPropertiesFileARCHI()
         'read and map relations from ARCHI export
-        ignoreRow = True
-        objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileRelations, 1)
-        Do While Not objFile.AtEndOfStream
-            strLine = objFile.readline
-            If ignoreRow Then
-                ignoreRow = False
-            Else
-                relationsArrayArchi = Split(Replace(strLine, """", ""), ",")
-                archiRelation = New ArchiRelation(relationsArrayArchi(0), relationsArrayArchi(1), relationsArrayArchi(2), relationsArrayArchi(3), relationsArrayArchi(4), relationsArrayArchi(5))
-                mappedRelationsFileARCHI.Add(relationsArrayArchi(0), archiRelation)
-            End If
-        Loop
-        objFile.Close
-        lLOG.Info(mappedRelationsFileARCHI.Count & " Relations have been read")
+        mappedRelationsFileARCHI = loadRelationsFileARCHI()
+
+        'finishing the system
         close(EAapp, Repository, False)
     End Sub
 

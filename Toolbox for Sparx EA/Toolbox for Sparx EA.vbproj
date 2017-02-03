@@ -89,10 +89,11 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArchiClasses.vb" />
-    <Compile Include="EAClasses.vb" />
-    <Compile Include="EACommon.vb" />
-    <Compile Include="EAConstants.vb" />
+    <Compile Include="archi\ArchiClasses.vb" />
+    <Compile Include="archi\ArchiCommon.vb" />
+    <Compile Include="sparxea\EAClasses.vb" />
+    <Compile Include="sparxea\EACommon.vb" />
+    <Compile Include="sparxea\EAConstants.vb" />
     <Compile Include="Main.vb" />
     <Compile Include="Common.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -110,7 +111,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="SolutionArchitecture.vb" />
+    <Compile Include="HCI\SolutionArchitecture.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
