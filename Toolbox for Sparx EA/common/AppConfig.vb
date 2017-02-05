@@ -1,4 +1,6 @@
-﻿Public Class AppConfig
+﻿Imports CommandLineParse
+
+Public Class AppConfig
     Private Const cParameterSwitch = "-"
     Private Const cOperationSwitch = "o"
     Private pOperation As String = ""
