@@ -92,11 +92,12 @@
     <Compile Include="archi\ArchiClasses.vb" />
     <Compile Include="archi\ArchiCommon.vb" />
     <Compile Include="archi\ArchiConstants.vb" />
+    <Compile Include="common\AppConfig.vb" />
     <Compile Include="HCI\HCIEAClasses.vb" />
     <Compile Include="sparxea\EACommon.vb" />
     <Compile Include="sparxea\EAConstants.vb" />
     <Compile Include="Main.vb" />
-    <Compile Include="Common.vb" />
+    <Compile Include="common\Common.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

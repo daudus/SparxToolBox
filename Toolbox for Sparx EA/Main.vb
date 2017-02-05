@@ -33,19 +33,18 @@ Module Main
         mappedRelationsFileARCHI = loadRelationsFileARCHI()
 
         'finishing the system
-        close(EAapp, Repository, False)
+        closeApp()
     End Sub
 
     Sub initApp(ByRef sArgs As String())
-        If sArgs.Length = 0 Then                'If there are no arguments
-            lLOG.Info("<-no arguments passed->")      'Just output Hello World
-        Else                                    'We have some arguments 
-            Dim j As Integer = 0
-
-            While j < sArgs.Length             'So with each argument
-                lLOG.Info("param: " & sArgs(j) + " and its value: " + sArgs(j + 1))       'Print out each item
-                j = j + 2                       'Increment to the next argument
-            End While
-        End If
+    End Sub
+    Sub closeApp()
+        mappedElementsFileARCHI.Clear()
+        mappedElementsFileARCHI = Nothing
+        mappedPropertiesFileARCHI.Clear()
+        mappedPropertiesFileARCHI = Nothing
+        mappedRelationsFileARCHI.Clear()
+        mappedRelationsFileARCHI = Nothing
+        close(EAapp, Repository, False)
     End Sub
 End Module

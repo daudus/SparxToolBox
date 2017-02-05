@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CommandLineParse", "CommandLineParse.vbproj", "{0750FD5C-105A-474E-AB36-CA98DC1FA2E4}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CommandLineParserTest.vb", "..\CommandLineParserTest.vb\CommandLineParserTest.vb.vbproj", "{72A70465-E4FE-4F29-933E-FDEF17AAF0A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{0750FD5C-105A-474E-AB36-CA98DC1FA2E4}.Debug.ActiveCfg = Debug|.NET
+		{0750FD5C-105A-474E-AB36-CA98DC1FA2E4}.Debug.Build.0 = Debug|.NET
+		{0750FD5C-105A-474E-AB36-CA98DC1FA2E4}.Release.ActiveCfg = Release|.NET
+		{0750FD5C-105A-474E-AB36-CA98DC1FA2E4}.Release.Build.0 = Release|.NET
+		{72A70465-E4FE-4F29-933E-FDEF17AAF0A2}.Debug.ActiveCfg = Debug|.NET
+		{72A70465-E4FE-4F29-933E-FDEF17AAF0A2}.Debug.Build.0 = Debug|.NET
+		{72A70465-E4FE-4F29-933E-FDEF17AAF0A2}.Release.ActiveCfg = Release|.NET
+		{72A70465-E4FE-4F29-933E-FDEF17AAF0A2}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

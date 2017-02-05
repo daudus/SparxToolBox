@@ -149,6 +149,18 @@ Namespace My
                 Me("SparxEATargetRepostoryFormat") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("importedFromArchi")>  _
+        Public Property SparxEATargetRepostoryDirectoryImportedFromArchi() As String
+            Get
+                Return CType(Me("SparxEATargetRepostoryDirectoryImportedFromArchi"),String)
+            End Get
+            Set
+                Me("SparxEATargetRepostoryDirectoryImportedFromArchi") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

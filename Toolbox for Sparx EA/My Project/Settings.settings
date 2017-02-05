@@ -26,5 +26,8 @@
     <Setting Name="SparxEATargetRepostoryFormat" Type="System.String" Scope="User">
       <Value Profile="(Default)">eap</Value>
     </Setting>
+    <Setting Name="SparxEATargetRepostoryDirectoryImportedFromArchi" Type="System.String" Scope="User">
+      <Value Profile="(Default)">importedFromArchi</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
