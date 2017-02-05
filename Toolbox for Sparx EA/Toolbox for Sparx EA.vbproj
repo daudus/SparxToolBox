@@ -91,7 +91,8 @@
   <ItemGroup>
     <Compile Include="archi\ArchiClasses.vb" />
     <Compile Include="archi\ArchiCommon.vb" />
-    <Compile Include="sparxea\EAClasses.vb" />
+    <Compile Include="archi\ArchiConstants.vb" />
+    <Compile Include="HCI\HCIEAClasses.vb" />
     <Compile Include="sparxea\EACommon.vb" />
     <Compile Include="sparxea\EAConstants.vb" />
     <Compile Include="Main.vb" />

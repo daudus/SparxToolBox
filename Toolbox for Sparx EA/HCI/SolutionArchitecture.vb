@@ -62,7 +62,7 @@
 
         For Each diagObj In diagram.DiagramObjects
             element = Repository.GetElementByID(diagObj.ElementID)
-            If (element.Stereotype = stereotypeElementGap) Then ' check only GAP elements
+            If (element.Stereotype = EAConstants.stereotypeElementGap) Then ' check only GAP elements
                 gap = New Gap(element.ElementID, element.Name, element.Notes)
                 gaps.Add(gap)
                 populateElementsForGap(gap)
@@ -86,18 +86,18 @@
                 element = Repository.GetElementByID(connector.ClientID)
             End If
             Select Case element.Stereotype
-                Case stereotypeElementService
+                Case EAConstants.stereotypeElementService
                     service = element
                     fnction = getFunctionForService(service)
                     component = getComponentForFunction(fnction)
                     app = getApplicationForComponent(component)
                     gap.ImpactedConcepts.Add(New Concept(element.Name, element.Stereotype, element.Notes, app))
-                Case stereotypeElementFunction
+                Case EAConstants.stereotypeElementFunction
                     fnction = element
                     component = getComponentForFunction(fnction)
                     app = getApplicationForComponent(component)
                     gap.ImpactedConcepts.Add(New Concept(element.Name, element.Stereotype, element.Notes, app))
-                Case stereotypeElementInterface
+                Case EAConstants.stereotypeElementInterface
                     intrface = element
                     component = getComponentForInterface(intrface)
                     app = getApplicationForComponent(component)
@@ -164,7 +164,7 @@
         Dim countConnectors As Short
         Dim owner As EA.Element = Nothing
 
-        connector = findRelation(intrface, stereotypeRelationComposition, relationDirectionClient)
+        connector = findRelation(intrface, EAConstants.stereotypeRelationComposition, EAConstants.relationDirectionClient)
         countConnectors = intrface.Connectors.Count
         If countConnectors = 0 Then
             Return Nothing
@@ -191,7 +191,7 @@
             'find proper realisation. service has to have olny one
             connector = service.Connectors(i)
             i = i + 1
-            If connector.Stereotype <> stereotypeRelationRealization Then
+            If connector.Stereotype <> EAConstants.stereotypeRelationRealization Then
                 'ignore
             Else
                 'it is realisation
@@ -199,7 +199,7 @@
                     'proper direction. service is Supplier - service is Realised By
                     found = True
                     owner = Repository.GetElementByID(connector.ClientID) 'should be function
-                    If owner.Stereotype <> stereotypeElementFunction Then
+                    If owner.Stereotype <> EAConstants.stereotypeElementFunction Then
                         lLOG.Error("Where is function for service " + service.Name + "?. Provided " + owner.Name + " with stereortype " + owner.Stereotype)
                     End If
                 Else
@@ -223,7 +223,7 @@
 
         While (Not found) And (Not stopp)
             'find proper composition. fnction has to be on the Client side of such relation
-            connector = findRelation(fnction, stereotypeRelationComposition, relationDirectionClient)
+            connector = findRelation(fnction, EAConstants.stereotypeRelationComposition, EAConstants.relationDirectionClient)
             If IsNothing(connector) Then 'AT the top level
                 stopp = True
             Else
@@ -241,7 +241,7 @@
             'find proper assignment. function has to have olny one
             connector = fnction.Connectors(i)
             i = i + 1
-            If connector.Stereotype <> stereotypeRelationAssignment Then
+            If connector.Stereotype <> EAConstants.stereotypeRelationAssignment Then
                 'ignore
             Else
                 'it is assignment
@@ -252,7 +252,7 @@
                     owner = Repository.GetElementByID(connector.SupplierID) 'should be component
                 End If
                 found = True
-                If owner.Stereotype <> stereotypeElementComponent Then
+                If owner.Stereotype <> EAConstants.stereotypeElementComponent Then
                     lLOG.Error("Where is component for sfunction " + fnction.Name + "?. Provided " + owner.Name + " with stereortype " + owner.Stereotype)
                 End If
             End If
@@ -272,7 +272,7 @@
 
         While (Not found) And (Not stopp)
             'find proper composition. component has to be on the Client side of such relation
-            connector = findRelation(component, stereotypeRelationComposition, relationDirectionClient)
+            connector = findRelation(component, EAConstants.stereotypeRelationComposition, EAConstants.relationDirectionClient)
             If IsNothing(connector) Then 'AT the top level
                 stopp = True
             Else
@@ -302,14 +302,14 @@
             Else
                 'proper relation
                 Select Case direction
-                    Case relationDirectionAny
+                    Case EAConstants.relationDirectionAny
                         found = True
-                    Case relationDirectionClient
+                    Case EAConstants.relationDirectionClient
                         If connector.ClientID = component.ElementID Then
                             'proper direction. component is Client
                             found = True
                         End If
-                    Case relationDirectionSupplier
+                    Case EAConstants.relationDirectionSupplier
                         If connector.SupplierID = component.ElementID Then
                             'proper direction. component is Supplier
                             found = True

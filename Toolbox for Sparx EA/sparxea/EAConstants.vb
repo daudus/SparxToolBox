@@ -1,4 +1,7 @@
-﻿Module EAConstants
+﻿Public Class EAConstants
+    Public Const metatypeArchimatePrefix = "ArchiMate3::"
+    Public Const stereotypeArchimatePrefix = "ArchiMate_"
+
     Public Const stereotypeElementGap = "ArchiMate_Gap"
     Public Const stereotypeElementComponent = "ArchiMate_ApplicationComponent"
     Public Const stereotypeElementFunction = "ArchiMate_ApplicationFunction"
@@ -15,4 +18,10 @@
     Public Const relationDirectionClient = 1
     Public Const relationDirectionSupplier = 2
 
-End Module
+    Public Const objectTypeActivity = "Activity"
+    Public Const objectTypeClass = "Class"
+    Public Const objectTypeInterface = "Interface"
+    Public Const objectTypeComponent = "Component"
+
+
+End Class
