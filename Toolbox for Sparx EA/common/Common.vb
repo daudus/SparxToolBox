@@ -1,7 +1,7 @@
 ﻿Module Common
     Dim key As ConsoleKeyInfo
     Dim STANDALONE As Boolean = True
-    Public ReadOnly lLOG As log4net.ILog = log4net.LogManager.GetLogger("GeneralLogger")
+    Public ReadOnly lLOG As log4net.ILog = log4net.LogManager.GetLogger("main")
 
 
     Public Sub initLog()

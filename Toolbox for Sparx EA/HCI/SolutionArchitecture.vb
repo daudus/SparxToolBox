@@ -86,18 +86,18 @@
                 element = Repository.GetElementByID(connector.ClientID)
             End If
             Select Case element.Stereotype
-                Case EAConstants.stereotypeElementService
+                Case EAConstants.stereotypeElementApplicationService
                     service = element
                     fnction = getFunctionForService(service)
                     component = getComponentForFunction(fnction)
                     app = getApplicationForComponent(component)
                     gap.ImpactedConcepts.Add(New Concept(element.Name, element.Stereotype, element.Notes, app))
-                Case EAConstants.stereotypeElementFunction
+                Case EAConstants.stereotypeElementApplicationFunction
                     fnction = element
                     component = getComponentForFunction(fnction)
                     app = getApplicationForComponent(component)
                     gap.ImpactedConcepts.Add(New Concept(element.Name, element.Stereotype, element.Notes, app))
-                Case EAConstants.stereotypeElementInterface
+                Case EAConstants.stereotypeElementApplicationInterface
                     intrface = element
                     component = getComponentForInterface(intrface)
                     app = getApplicationForComponent(component)
@@ -199,7 +199,7 @@
                     'proper direction. service is Supplier - service is Realised By
                     found = True
                     owner = Repository.GetElementByID(connector.ClientID) 'should be function
-                    If owner.Stereotype <> EAConstants.stereotypeElementFunction Then
+                    If owner.Stereotype <> EAConstants.stereotypeElementApplicationFunction Then
                         lLOG.Error("Where is function for service " + service.Name + "?. Provided " + owner.Name + " with stereortype " + owner.Stereotype)
                     End If
                 Else
@@ -252,7 +252,7 @@
                     owner = Repository.GetElementByID(connector.SupplierID) 'should be component
                 End If
                 found = True
-                If owner.Stereotype <> EAConstants.stereotypeElementComponent Then
+                If owner.Stereotype <> EAConstants.stereotypeElementApplicationComponent Then
                     lLOG.Error("Where is component for sfunction " + fnction.Name + "?. Provided " + owner.Name + " with stereortype " + owner.Stereotype)
                 End If
             End If

@@ -1,30 +1,33 @@
 ﻿Public Class ArchiConstants
+    Public Const typeModel = "ArchimateModel"
+    Public Const RelationSuffix = "Relationship"
 
-    'Archi motivation
-    Public Const stereotypeElementGap = "Gap"
+
+    'motivation
+    Public Const typeElementGap = "Gap"
 
     'business
-    Public Const stereotypeElementBusProcess = "BusinessProcess"
-    Public Const stereotypeElementBusFunction = "BusinessFunction"
+    Public Const typeElementBusProcess = "BusinessProcess"
+    Public Const typeElementBusFunction = "BusinessFunction"
 
     'technology
-    Public Const stereotypeElementNode = "Node"
-    Public Const stereotypeElementSystemSoftware = "SystemSoftware"
-    Public Const stereotypeElementTechnologyInterface = "TechnologyInterface"
-    Public Const stereotypeElementTechnologyService = "TechnologyService"
+    Public Const typeElementNode = "Node"
+    Public Const typeElementSystemSoftware = "SystemSoftware"
+    Public Const typeElementTechnologyInterface = "TechnologyInterface"
+    Public Const typeElementTechnologyService = "TechnologyService"
 
     'application
-    Public Const stereotypeElementAppComponent = "ApplicationComponent"
-    Public Const stereotypeElementAppFunction = "ApplicationFunction"
-    Public Const stereotypeElementAppService = "ApplicationService"
-    Public Const stereotypeElementAppInterface = "ApplicationInterface"
+    Public Const typeElementAppComponent = "ApplicationComponent"
+    Public Const typeElementAppFunction = "ApplicationFunction"
+    Public Const typeElementAppService = "ApplicationService"
+    Public Const typeElementAppInterface = "ApplicationInterface"
 
-    'relations
-    Public Const stereotypeRelationRealization = "RealizationRelationship"
-    Public Const stereotypeRelationAssociation = "AssociationRelationship"
-    Public Const stereotypeRelationComposition = "CompositionRelationship"
-    Public Const stereotypeRelationServing = "ServingRelationship"
-    Public Const stereotypeRelationAssignment = "AssignmentRelationship"
-    Public Const stereotypeRelationFlow = "FlowRelationship"
+    'relation
+    Public Const typeRelationRealization = "RealizationRelationship"
+    Public Const typeRelationAssociation = "AssociationRelationship"
+    Public Const typeRelationComposition = "CompositionRelationship"
+    Public Const typeRelationServing = "ServingRelationship"
+    Public Const typeRelationAssignment = "AssignmentRelationship"
+    Public Const typeRelationFlow = "FlowRelationship"
 
 End Class

@@ -10,7 +10,7 @@
         Dim mappedElementsFileARCHI As New Hashtable
 
         ignoreRow = True
-        objFSO = CreateObject("Scripting.FileSystemObject")
+        If IsNothing(objFSO) Then objFSO = CreateObject("Scripting.FileSystemObject")
         objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileElements, 1)
         Do While Not objFile.AtEndOfStream
             strLine = objFile.readline
@@ -37,6 +37,7 @@
         Dim i = 0
 
         ignoreRow = True
+        If IsNothing(objFSO) Then objFSO = CreateObject("Scripting.FileSystemObject")
         objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileProperties, 1)
         Do While Not objFile.AtEndOfStream
             strLine = objFile.readline
@@ -70,6 +71,7 @@
         Dim mappedRelationsFileARCHI As New Hashtable
 
         ignoreRow = True
+        If IsNothing(objFSO) Then objFSO = CreateObject("Scripting.FileSystemObject")
         objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileRelations, 1)
         Do While Not objFile.AtEndOfStream
             strLine = objFile.readline

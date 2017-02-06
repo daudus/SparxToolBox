@@ -3,6 +3,8 @@
     Private pType As String
     Private pName As String
     Private pDocumentation As String
+    Private pGUIDEA As String
+    Private pElementIDEA As Integer
 
     Sub New(ByVal ID As String, ByVal Type As String, ByVal Name As String, ByVal Documentation As String)
         pID = ID
@@ -44,6 +46,24 @@
         End Get
         Set(ByVal value As String)
             pDocumentation = value
+        End Set
+    End Property
+
+    Public Property GUIDEA() As String
+        Get
+            Return pGUIDEA
+        End Get
+        Set(ByVal value As String)
+            pGUIDEA = value
+        End Set
+    End Property
+
+    Public Property ElementIDEA() As String
+        Get
+            Return pElementIDEA
+        End Get
+        Set(ByVal value As String)
+            pElementIDEA = value
         End Set
     End Property
 

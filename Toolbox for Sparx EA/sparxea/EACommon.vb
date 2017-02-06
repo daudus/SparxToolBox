@@ -28,6 +28,23 @@
         Return EAapp.Repository
     End Function
 
+    Function getModel(ByRef repository As EA.Repository) As Object
+        Dim found As Boolean = False
+        Dim model As Object = Nothing
+        Dim idx As Integer = 0
+
+        While (Not found) And (idx < repository.Models.Count)
+            model = repository.Models.GetAt(0)
+            lLOG.Debug("Model: " + model.Name)
+            If model.Name.Equals(My.Settings.SparxEATargetRepostoryModelArchiImported) Then
+                found = True
+            End If
+            idx = idx + 1
+        End While
+        If Not found Then model = Nothing
+        Return model
+    End Function
+
     Sub close(ByRef EAapp As Object, ByRef Repository As EA.Repository, close As Boolean)
         lLOG.Info("System is being to be closed")
         If close Then
@@ -35,6 +52,8 @@
             Repository.Exit()
             Repository = Nothing
             EAapp = Nothing
+            GC.Collect()
+            GC.WaitForPendingFinalizers()
         Else
             lLOG.Info("Sparx EA Repository is still running!")
         End If
@@ -51,6 +70,49 @@
         ' GUID returned from typeLib has 2 unprintable characters at the end which stuff up string
         ' manipulation later on
         Return Left(typeLib.Guid(), 38)
+    End Function
+    Function getPackageFromModel(ByRef model As Object) As EA.Package
+        Dim found As Boolean = False
+        Dim package As EA.Package = Nothing
+        Dim idx As Integer = 0
 
+        While (Not found) And (idx < model.Packages.Count)
+            package = model.Packages.GetAt(idx)
+            lLOG.Debug("Package: " + package.Name)
+
+            If package.Name.Equals(My.Settings.SparxEATargetRepostoryPackageArchiImported) Then
+                found = True
+            Else
+                idx = idx + 1
+                package = getPackage(My.Settings.SparxEATargetRepostoryPackageArchiImported, package)
+                If Not IsNothing(package) Then
+                    found = True
+                End If
+            End If
+        End While
+        If Not found Then package = Nothing
+        Return package
+    End Function
+
+    Function getPackage(ByRef name As String, ByVal contextPackage As EA.Package) As EA.Package
+        Dim package As EA.Package = Nothing
+        Dim found As Boolean = False
+        Dim idx As Integer = 0
+
+        While (Not found) And (idx < contextPackage.Packages.Count)
+            package = contextPackage.Packages.GetAt(idx)
+            lLOG.Debug("Package: " + package.Name)
+            If package.Name.Equals(name) Then
+                found = True
+            Else
+                idx = idx + 1
+                package = getPackage(name, package)
+                If Not IsNothing(package) Then
+                    found = True
+                End If
+            End If
+        End While
+        If Not found Then package = Nothing
+        Return package
     End Function
 End Module

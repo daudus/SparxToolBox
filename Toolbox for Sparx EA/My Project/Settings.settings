@@ -26,8 +26,14 @@
     <Setting Name="SparxEATargetRepostoryFormat" Type="System.String" Scope="User">
       <Value Profile="(Default)">eap</Value>
     </Setting>
-    <Setting Name="SparxEATargetRepostoryDirectoryImportedFromArchi" Type="System.String" Scope="User">
+    <Setting Name="SparxEATargetRepostoryPackageArchiImported" Type="System.String" Scope="User">
       <Value Profile="(Default)">importedFromArchi</Value>
+    </Setting>
+    <Setting Name="SparxEATargetRepostoryModelArchiImported" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Global</Value>
+    </Setting>
+    <Setting Name="Author" Type="System.String" Scope="User">
+      <Value Profile="(Default)">T.O.O.L.B.O.X</Value>
     </Setting>
   </Settings>
 </SettingsFile>

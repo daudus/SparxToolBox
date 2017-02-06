@@ -153,12 +153,36 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("importedFromArchi")>  _
-        Public Property SparxEATargetRepostoryDirectoryImportedFromArchi() As String
+        Public Property SparxEATargetRepostoryPackageArchiImported() As String
             Get
-                Return CType(Me("SparxEATargetRepostoryDirectoryImportedFromArchi"),String)
+                Return CType(Me("SparxEATargetRepostoryPackageArchiImported"),String)
             End Get
             Set
-                Me("SparxEATargetRepostoryDirectoryImportedFromArchi") = value
+                Me("SparxEATargetRepostoryPackageArchiImported") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Global")>  _
+        Public Property SparxEATargetRepostoryModelArchiImported() As String
+            Get
+                Return CType(Me("SparxEATargetRepostoryModelArchiImported"),String)
+            End Get
+            Set
+                Me("SparxEATargetRepostoryModelArchiImported") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("T.O.O.L.B.O.X")>  _
+        Public Property Author() As String
+            Get
+                Return CType(Me("Author"),String)
+            End Get
+            Set
+                Me("Author") = value
             End Set
         End Property
     End Class
