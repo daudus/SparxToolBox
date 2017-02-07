@@ -17,7 +17,7 @@
             lLOG.Info("Repository already opened: " & EAapp.Repository.ConnectionString)
         End If
         EAapp.Visible = True
-        If String.Compare(EAapp.Repository.ConnectionString, My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile) <> 0 Then
+        If String.Compare(UCase(EAapp.Repository.ConnectionString), UCase(My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile)) <> 0 Then
             lLOG.Fatal("Wrong Repository Detected. Opened <" & EAapp.Repository.ConnectionString & "> but expected <" & My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile & "> ")
             close(EAapp, EAapp.Repository, True)
         End If
@@ -33,15 +33,19 @@
         Dim model As Object = Nothing
         Dim idx As Integer = 0
 
+        lLOG.Info("Finding model in EA Repository: " + My.Settings.SparxEATargetRepostoryModelArchiImported)
         While (Not found) And (idx < repository.Models.Count)
             model = repository.Models.GetAt(0)
-            lLOG.Debug("Model: " + model.Name)
+            lLOG.Debug("EA model: " + model.Name)
             If model.Name.Equals(My.Settings.SparxEATargetRepostoryModelArchiImported) Then
                 found = True
             End If
             idx = idx + 1
         End While
-        If Not found Then model = Nothing
+        If Not found Then
+            model = Nothing
+            lLOG.Error("Model " + My.Settings.SparxEATargetRepostoryModelArchiImported + " not found.")
+        End If
         Return model
     End Function
 
@@ -76,6 +80,7 @@
         Dim package As EA.Package = Nothing
         Dim idx As Integer = 0
 
+        lLOG.Info("Finding package in EA Repository: " + My.Settings.SparxEATargetRepostoryPackageArchiImported)
         While (Not found) And (idx < model.Packages.Count)
             package = model.Packages.GetAt(idx)
             lLOG.Debug("Package: " + package.Name)
@@ -90,7 +95,10 @@
                 End If
             End If
         End While
-        If Not found Then package = Nothing
+        If Not found Then
+            package = Nothing
+            lLOG.Error("Package " + My.Settings.SparxEATargetRepostoryPackageArchiImported + " not found.")
+        End If
         Return package
     End Function
 

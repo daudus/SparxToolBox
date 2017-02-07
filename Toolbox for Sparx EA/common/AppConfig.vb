@@ -19,7 +19,7 @@ Public Class AppConfig
         Dim op As String
 
         If sArgs.Length = 0 Then
-            lLOG.Fatal("No arguments passed in command line")
+            lLOG.Fatal("No arguments passed in command line. Try '-op=cleanimport'")
         Else
             'We have some arguments 
             dumpArguments(sArgs)

@@ -9,6 +9,7 @@
         Dim archiElement As ArchiElement
         Dim mappedElementsFileARCHI As New Hashtable
 
+        lLOG.Info("loadElementsFileARCHI started")
         ignoreRow = True
         If IsNothing(objFSO) Then objFSO = CreateObject("Scripting.FileSystemObject")
         objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileElements, 1)
@@ -27,6 +28,7 @@
 
         'return
         loadElementsFileARCHI = mappedElementsFileARCHI
+        lLOG.Info("loadElementsFileARCHI finished")
     End Function
 
     Function loadPropertiesFileARCHI() As Hashtable
@@ -36,6 +38,7 @@
         Dim archiPropertyArray As ArrayList
         Dim i = 0
 
+        lLOG.Info("loadPropertiesFileARCHI started")
         ignoreRow = True
         If IsNothing(objFSO) Then objFSO = CreateObject("Scripting.FileSystemObject")
         objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileProperties, 1)
@@ -63,6 +66,7 @@
         objFile.Close
         lLOG.Info(mappedPropertiesFileARCHI.Count & " Elements have Properties and they have been read. And also " & i & " Properties have been read")
         loadPropertiesFileARCHI = mappedPropertiesFileARCHI
+        lLOG.Info("loadPropertiesFileARCHI finished")
     End Function
 
     Function loadRelationsFileARCHI() As Hashtable
@@ -70,6 +74,7 @@
         Dim archiRelation As ArchiRelation
         Dim mappedRelationsFileARCHI As New Hashtable
 
+        lLOG.Info("loadRelationsFileARCHI started")
         ignoreRow = True
         If IsNothing(objFSO) Then objFSO = CreateObject("Scripting.FileSystemObject")
         objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileRelations, 1)
@@ -86,5 +91,6 @@
         objFile.Close
         lLOG.Info(mappedRelationsFileARCHI.Count & " Relations have been read")
         loadRelationsFileARCHI = mappedRelationsFileARCHI
+        lLOG.Info("loadRelationsFileARCHI finished")
     End Function
 End Module

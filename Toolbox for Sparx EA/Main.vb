@@ -1,4 +1,13 @@
-﻿Option Explicit On
+﻿'TODO: ISSUE with inconsistency of exports to CSV format from ARCHI. Lots of "EOL"s in "free text" fields (e.g. documentation) cause exceptional behavioral. 
+'Files need to be normalized ... solution is simple: choose "Strip Newline Characters"
+'Analysis:
+'  22 0a    {",LF} is problem. Has to be replaced by {"}
+'  0a 22    {LF,"} is problem. Has to be replaced by {"}. Warning: {CR,LF,"} is valid and OK!
+'  0a inside/between "" is problem
+'  0d 0a inside/between "" is problem
+'  0d 0a    {CR,LF} outside "" is OK.
+'
+Option Explicit On
 
 Imports EA
 Imports System.Collections.Specialized
@@ -67,31 +76,46 @@ Module Main
         Dim client As EA.Element
         Dim supplier As EA.Element
         Dim relationArchi As ArchiRelation
+        Dim sourceArchi, targetArchi As ArchiElement
 
         Dim key As String
         Dim keys As Collections.ICollection
         Dim stereotype, type As String
 
+        lLOG.Info("createRelationsInEA started")
         keys = archiRelations.Keys
         For Each key In keys
+            client = Nothing
+            supplier = Nothing
             relationArchi = archiRelations(key)
-            supplier = repository.GetElementByID(archiElements(relationArchi.Source).ElementIDEA)
-            client = repository.GetElementByID(archiElements(relationArchi.Target).ElementIDEA)
-            stereotype = EAConstants.typeArchi2StereotypeEA(relationArchi.Type.Substring(0, Len(relationArchi.Type) - Len(ArchiConstants.RelationSuffix)))
-            type = EAConstants.stereotype2type(Stereotype)
+            sourceArchi = archiElements(relationArchi.Source)
+            targetArchi = archiElements(relationArchi.Target)
+            If IsNothing(sourceArchi) Then
+                lLOG.Error("For relation " + relationArchi.ID + "there is no source element " + relationArchi.Source + " in import files")
+            Else
+                supplier = repository.GetElementByID(sourceArchi.ElementIDEA)
+                If IsNothing(targetArchi) Then
+                    lLOG.Error("For relation " + relationArchi.ID + "there is no target element " + relationArchi.Target + " in import files")
+                Else
+                    client = repository.GetElementByID(archiElements(relationArchi.Target).ElementIDEA)
+                    stereotype = EAConstants.typeArchi2StereotypeEA(relationArchi.Type.Substring(0, Len(relationArchi.Type) - Len(ArchiConstants.RelationSuffix)))
+                    type = EAConstants.stereotype2type(stereotype)
 
-            connector = supplier.Connectors.AddNew(relationArchi.Name, type)
-            With connector
-                .SupplierID = client.ElementID
-                .Stereotype = EAConstants.metatypeArchimatePrefix & stereotype
-                .Notes = relationArchi.Documentation
-                .Direction = EAConstants.connectorDirectionSourceDestination
-                'TODO: TaggedValues
-                'TODO: store Archi IDs into EA
-                'TODO: store EA IDs into Archi
-                .Update()
-            End With
+                    connector = supplier.Connectors.AddNew(relationArchi.Name, type)
+                    With connector
+                        .SupplierID = client.ElementID
+                        .Stereotype = EAConstants.metatypeArchimatePrefix & stereotype
+                        .Notes = relationArchi.Documentation
+                        .Direction = EAConstants.connectorDirectionSourceDestination
+                        'TODO: TaggedValues
+                        'TODO: store Archi IDs into EA
+                        'TODO: store EA IDs into Archi
+                        .Update()
+                    End With
+                End If
+            End If
         Next key
+        lLOG.Info("createRelationsInEA finished")
     End Sub
     Sub createElementsInEA(ByRef package As EA.Package, ByRef archiElements As Hashtable, ByRef archiProperties As Hashtable)
         Dim elementEA As EA.Element
@@ -105,6 +129,7 @@ Module Main
         Dim keys As Collections.ICollection
         Dim properties As ArrayList
 
+        lLOG.Info("createElementsInEA started")
         keys = archiElements.Keys
         For Each key In keys
             elementArchi = archiElements(key)
@@ -141,6 +166,7 @@ Module Main
         Next key
         package.Elements.Refresh()
         package.Update()
+        lLOG.Info("createElementsInEA finished")
     End Sub
     Sub initApp(ByRef sArgs As String())
         appConfig = New AppConfig(sArgs)
