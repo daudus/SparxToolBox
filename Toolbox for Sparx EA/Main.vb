@@ -9,9 +9,6 @@
 '
 Option Explicit On
 
-Imports EA
-Imports System.Collections.Specialized
-
 <Assembly: log4net.Config.XmlConfigurator(ConfigFile:="log4net.xml", Watch:=True)>
 
 Module Main
@@ -77,6 +74,8 @@ Module Main
         Dim supplier As EA.Element
         Dim relationArchi As ArchiRelation
         Dim sourceArchi, targetArchi As ArchiElement
+        Dim spin As ConsoleSpiner
+        Dim listMsg As New ArrayList()
 
         Dim key As String
         Dim keys As Collections.ICollection
@@ -84,18 +83,20 @@ Module Main
 
         lLOG.Info("createRelationsInEA started")
         keys = archiRelations.Keys
+        spin = New ConsoleSpiner(keys.Count, 1)
         For Each key In keys
+            spin.Turn()
             client = Nothing
             supplier = Nothing
             relationArchi = archiRelations(key)
             sourceArchi = archiElements(relationArchi.Source)
             targetArchi = archiElements(relationArchi.Target)
             If IsNothing(sourceArchi) Then
-                lLOG.Error("For relation " + relationArchi.ID + "there is no source element " + relationArchi.Source + " in import files")
+                listMsg.Add("For relation " + relationArchi.ID + "there is no source element " + relationArchi.Source + " in import files")
             Else
                 supplier = repository.GetElementByID(sourceArchi.ElementIDEA)
                 If IsNothing(targetArchi) Then
-                    lLOG.Error("For relation " + relationArchi.ID + "there is no target element " + relationArchi.Target + " in import files")
+                    listMsg.Add("For relation " + relationArchi.ID + "there is no target element " + relationArchi.Target + " in import files")
                 Else
                     client = repository.GetElementByID(archiElements(relationArchi.Target).ElementIDEA)
                     stereotype = EAConstants.typeArchi2StereotypeEA(relationArchi.Type.Substring(0, Len(relationArchi.Type) - Len(ArchiConstants.RelationSuffix)))
@@ -115,6 +116,8 @@ Module Main
                 End If
             End If
         Next key
+        spin.Finish()
+        If Not IsNothing(listMsg) Then populateMessageArray(listMsg, Core.Level.Error)
         lLOG.Info("createRelationsInEA finished")
     End Sub
     Sub createElementsInEA(ByRef package As EA.Package, ByRef archiElements As Hashtable, ByRef archiProperties As Hashtable)
@@ -122,6 +125,8 @@ Module Main
         Dim taggedValue As EA.TaggedValue
         Dim elementArchi As ArchiElement
         Dim elementProperty As ArchiProperty
+        Dim listMsg As New ArrayList()
+        Dim spin As ConsoleSpiner
 
         Dim stereotype As String
         Dim type As String
@@ -131,7 +136,10 @@ Module Main
 
         lLOG.Info("createElementsInEA started")
         keys = archiElements.Keys
+        spin = New ConsoleSpiner(keys.Count, 1)
         For Each key In keys
+            'TODO: listMsg.Add(some error message) if necessary
+            spin.Turn()
             elementArchi = archiElements(key)
             stereotype = EAConstants.typeArchi2StereotypeEA(elementArchi.Type)
             If elementArchi.Type.Equals(ArchiConstants.typeModel) Then
@@ -164,8 +172,14 @@ Module Main
                 End With
             End If
         Next key
+        spin.Finish()
+        If Not IsNothing(listMsg) Then populateMessageArray(listMsg, Core.Level.Error)
+        lLOG.Info("Package is being refreshed")
         package.Elements.Refresh()
+        lLOG.Info("Package is refreshed")
+        lLOG.Info("Package is being updated. It will take a while ...")
         package.Update()
+        lLOG.Info("Package is updated")
         lLOG.Info("createElementsInEA finished")
     End Sub
     Sub initApp(ByRef sArgs As String())
@@ -179,7 +193,7 @@ Module Main
         mappedRelationsFileARCHI.Clear()
         mappedRelationsFileARCHI = Nothing
         close(EAapp, Repository, False)
-        lLOG.Fatal("PRESS ANY KEY TO EXIT")
+        Console.WriteLine("PRESS ANY KEY TO EXIT")
         Console.ReadKey()
     End Sub
 End Module

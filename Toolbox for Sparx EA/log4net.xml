@@ -13,7 +13,7 @@
       <level value="ALL" />
     </logger>
     <appender name="GeneralAppender" type="log4net.Appender.RollingFileAppender">
-      <file value="c:\Users\david.skarka\Documents\Priv\MTU\application.log" />
+      <file value="toolbox4sparxea.log" />
       <appendToFile value="true" />
       <rollingStyle value="Composite" />
       <datePattern value="yyyyMMdd" />

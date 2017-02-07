@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Archi to Sparx EA Importer")>
+<Assembly: AssemblyTitle("Toolbox Archi to SparxEA")>
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("Archi to Sparx EA Importer")>
+<Assembly: AssemblyProduct("Toolbox Archi to SparxEA")>
 <Assembly: AssemblyCopyright("Copyright ©  2017 David ŠKarka")>
 <Assembly: AssemblyTrademark("")>
 
