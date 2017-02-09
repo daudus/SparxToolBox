@@ -1,6 +1,11 @@
 ﻿Public Class ArchiConstants
+    Public Const csvDelimiter = ","
+    Public Const csvQualifier = """"
+    Public Shared ReadOnly columsMappedElementsFileARCHI As String() = {"ID", "Type", "Name", "Documentation"}
     Public Const encodePropertyParameter = "%s" '%s is replaceable parameter
     Public Const encodeProperty = "{ARCHIPROPID:" + encodePropertyParameter + ":}"
+    Public Const propertyEAGUID = "EAGUID"
+    Public Const propertyEAID = "EAGUID"
     Public Const typeModel = "ArchimateModel"
     Public Const RelationSuffix = "Relationship"
 

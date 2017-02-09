@@ -1,4 +1,6 @@
 ﻿Public Class EAConstants
+    Public Const encodePropertyParameter = "%s" '%s is replaceable parameter
+    Public Const encodeProperty = "{ARCHIPROPID:" + encodePropertyParameter + ":}"
     Public Const taggedValueArchiID = "ARCHI_ID"
     Public Const metatypeArchimatePrefix = "ArchiMate3::"
     Public Const stereotypeArchimatePrefix = "ArchiMate_"

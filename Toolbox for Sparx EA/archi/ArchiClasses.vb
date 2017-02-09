@@ -66,7 +66,10 @@
             pElementIDEA = value
         End Set
     End Property
-
+    Public Function toStringArray() As String()
+        Dim s() As String = {ID, Type, Name, Documentation}
+        Return s
+    End Function
 End Class
 Public Class ArchiRelation
     Private pID As String

@@ -6,6 +6,8 @@
 '  0a inside/between "" is problem
 '  0d 0a inside/between "" is problem
 '  0d 0a    {CR,LF} outside "" is OK.
+'TODO: save connectorsArchi
+'TODO: save propertiesArchi
 'TODO: support oneway update ARCHI2SPARXEA
 'TODO: help about parameters in command line
 'TODO: work without app config file  - default actual dir, naming (model from Archi.Model), default package a default eap name and default archi export file names
@@ -23,6 +25,7 @@ Module Main
     Dim Package As EA.Package
 
     Dim mappedElementsFileARCHI As New Hashtable
+    Dim columsMappedElementsFileARCHI As String()
     Dim mappedPropertiesFileARCHI As New Hashtable
     Dim mappedRelationsFileARCHI As New Hashtable
     Dim appConfig As AppConfig
@@ -65,12 +68,15 @@ Module Main
         mappedPropertiesFileARCHI = loadPropertiesFileARCHI()
         'read and map relations from ARCHI export
         mappedRelationsFileARCHI = loadRelationsFileARCHI()
+
         'read and map elements from ARCHI export
         'has to be last; after properties and relations!
         mappedElementsFileARCHI = loadElementsFileARCHI()
+        columsMappedElementsFileARCHI = mappedElementsFileARCHI(ArchiConstants.columsMappedElementsFileARCHI(0)).toStringArray 'ID
+        mappedElementsFileARCHI.Remove(ArchiConstants.columsMappedElementsFileARCHI(0)) 'removes row with names of columns
         createElementsInEA(Package, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
         createRelationsInEA(Repository, mappedRelationsFileARCHI, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
-
+        saveElementsFileARCHI(columsMappedElementsFileARCHI, mappedElementsFileARCHI)
         'finishing the system
         closeApp()
     End Sub
@@ -125,6 +131,8 @@ Module Main
                             'store EA identifiers into elementArchi
                             relationArchi.GUIDEA = .ConnectorGUID
                             relationArchi.RelationIDEA = .ConnectorID
+                            'TODO:create correspondend property in archiProperties
+                            '
                             .Update()
                             .TaggedValues.Refresh()
                         End With
@@ -174,6 +182,8 @@ Module Main
                     'store EA identifiers into elementArchi
                     elementArchi.GUIDEA = .ElementGUID
                     elementArchi.ElementIDEA = .ElementID
+                    'TODO:create correspondend property in archiProperties
+                    '
                     .TaggedValues.Refresh()
                     .Update()
                 End With
@@ -217,13 +227,15 @@ Module Main
                         lLOG.Error("Tagged Value with Archi ID " + elementProperty.ID + " not created: " + (taggedValue.GetLastError))
                         'store Sparx EA IDs into Archi property
                     End If
-                    'Again diff between TaggedValues dor element and connector
+                    'Again diff between TaggedValues for element and connector
                     elementProperty.GUIDEA = taggedValue.TagGUID
                     elementProperty.TagValueIDEA = taggedValue.TagID
+                    'TODO:create and encode into corresponden property in archiProperties into documentation
+                    '
                 End If
             Next elementProperty
         Else
-                    msg = "Element does not have any property. So, no Tag_Value was created for archi element: " + relationArchi.ID + ":" + relationArchi.Type + ":" + relationArchi.Name
+            msg = "Element does not have any property. So, no Tag_Value was created for archi element: " + relationArchi.ID + ":" + relationArchi.Type + ":" + relationArchi.Name
         End If
         'add reference to ARCHI model
         taggedValue = connectorEA.TaggedValues.AddNew(EAConstants.taggedValueArchiID, relationArchi.ID)
@@ -232,6 +244,7 @@ Module Main
         End If
         Return msg
     End Function
+
     Function _addTaggedValues(ByRef elementEA As Object, ByRef elementArchi As Object, ByRef archiProperties As Hashtable) As String
         Dim properties As ArrayList
         Dim taggedValue As EA.TaggedValue
@@ -258,9 +271,11 @@ Module Main
                         lLOG.Error("Tagged Value with Archi ID " + elementProperty.ID + " not created: " + (taggedValue.GetLastError))
                         'store Sparx EA IDs into Archi property
                     End If
-                    'Again diff between TaggedValues dor element and connector
+                    'Again diff between TaggedValues for element and connector
                     elementProperty.GUIDEA = taggedValue.PropertyGUID
                     elementProperty.TagValueIDEA = taggedValue.PropertyID
+                    'TODO:create and encode into corresponden property in archiProperties into documentation
+                    '
                 End If
             Next
         Else

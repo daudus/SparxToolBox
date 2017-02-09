@@ -10,18 +10,14 @@
         Dim mappedElementsFileARCHI As New Hashtable
 
         lLOG.Info("loadElementsFileARCHI started")
-        ignoreRow = True
         If IsNothing(objFSO) Then objFSO = CreateObject("Scripting.FileSystemObject")
         objFile = objFSO.OpenTextFile(My.Settings.ArchiImportDirectory & My.Settings.ArchiImportFileElements, 1)
+        'the first line contains names of columns
         Do While Not objFile.AtEndOfStream
             strLine = objFile.readline
-            If ignoreRow Then
-                ignoreRow = False
-            Else
-                elementsArrayArchi = Split(Replace(strLine, """", ""), ",")
-                ArchiElement = New ArchiElement(elementsArrayArchi(0), elementsArrayArchi(1), elementsArrayArchi(2), elementsArrayArchi(3))
-                mappedElementsFileARCHI.Add(elementsArrayArchi(0), ArchiElement)
-            End If
+            elementsArrayArchi = Split(Replace(strLine, """", ""), ",")
+            archiElement = New ArchiElement(elementsArrayArchi(0), elementsArrayArchi(1), elementsArrayArchi(2), elementsArrayArchi(3))
+            mappedElementsFileARCHI.Add(elementsArrayArchi(0), archiElement)
         Loop
         objFile.Close
         lLOG.Info(mappedElementsFileARCHI.Count & " Elements have been read")
@@ -93,33 +89,52 @@
         loadRelationsFileARCHI = mappedRelationsFileARCHI
         lLOG.Info("loadRelationsFileARCHI finished")
     End Function
-    Function saveElementsFileARCHI(ByRef archiElements As Hashtable) As String
+    Function saveElementsFileARCHI(ByRef columsMappedElementsFileARCHI As String(), ByRef archiElements As Hashtable) As String
         Dim msg As String = Nothing
         Dim key As String
         Dim spin As ConsoleSpiner
         Dim keys As ICollection
         Dim elementArchi As ArchiElement
-        Dim stLine As String = ""
-        Dim objWriter As IO.StreamWriter = IO.File.AppendText("c:\Users\david.skarka\Documents\Priv\MTU\test.csv")
+        Dim stLine As Text.StringBuilder
+
+        'TODO: try catch
+        'TODO: not constant file path and name
+        Dim objWriter As IO.StreamWriter = IO.File.CreateText("c:\Users\david.skarka\Documents\Priv\MTU\test.csv")
 
         lLOG.Info("saveElementsFileARCHI started")
         keys = archiElements.Keys
         spin = New ConsoleSpiner(keys.Count, 1)
+        'columns names
+        stLine = _mappedScvRow(columsMappedElementsFileARCHI)
+        objWriter.Write(stLine.ToString)
+        objWriter.Write(Environment.NewLine)
         For Each key In keys
             spin.Turn()
             elementArchi = archiElements(key)
-            stLine = ""
-            'objWriter.Write(_CustomerID & ",")
-            'objWriter.Write(_FirstName & ",")
-            'If value contains comma in the value then you have to perform this opertions
+            stLine.Clear()
+            stLine = _mappedScvRow(elementArchi.toStringArray)
+            objWriter.Write(stLine.ToString)
+            'TODO: If value contains comma in the value then you have to perform this opertions
             'Dim append = If(_Msg.Contains(","), String.Format("""{0}""", _Msg), _Msg)
             'stLine = String.Format("{0}{1},", stLine, append)
-            objWriter.Write(stLine)
             objWriter.Write(Environment.NewLine)
         Next key
         objWriter.Close()
+        stLine = Nothing
         spin.Finish()
         lLOG.Info("saveElementsFileARCHI finished")
         Return msg
+    End Function
+
+    Private Function _mappedScvRow(columns As String()) As Text.StringBuilder
+        Dim stl As New Text.StringBuilder
+        Dim idx As Byte = 1
+
+        For Each s As String In columns
+            stl.Append(ArchiConstants.csvQualifier).Append(s).Append(ArchiConstants.csvQualifier)
+            If idx < columns.Length Then stl.Append(ArchiConstants.csvDelimiter)
+            idx = idx + 1
+        Next s
+        Return stl
     End Function
 End Module
