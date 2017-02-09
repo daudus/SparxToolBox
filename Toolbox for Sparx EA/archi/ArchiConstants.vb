@@ -1,4 +1,6 @@
 ﻿Public Class ArchiConstants
+    Public Const encodePropertyParameter = "%s" '%s is replaceable parameter
+    Public Const encodeProperty = "{ARCHIPROPID:" + encodePropertyParameter + ":}"
     Public Const typeModel = "ArchimateModel"
     Public Const RelationSuffix = "Relationship"
 

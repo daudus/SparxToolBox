@@ -42,6 +42,9 @@
             End If
             idx = idx + 1
         End While
+        If idx = 0 Then
+            lLOG.Error("No Model found in Sparx EA repository.")
+        End If
         If Not found Then
             model = Nothing
             lLOG.Error("Model " + My.Settings.SparxEATargetRepostoryModelArchiImported + " not found.")

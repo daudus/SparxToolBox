@@ -116,6 +116,7 @@
     <Compile Include="common\AppConfig.vb" />
     <Compile Include="common\Classes.vb" />
     <Compile Include="HCI\HCIEAClasses.vb" />
+    <Compile Include="_test.vb" />
     <Compile Include="sparxea\EAClasses.vb" />
     <Compile Include="sparxea\EACommon.vb" />
     <Compile Include="sparxea\EAConstants.vb" />

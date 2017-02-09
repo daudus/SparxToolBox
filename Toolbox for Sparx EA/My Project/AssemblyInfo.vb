@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
 <Assembly: AssemblyProduct("Toolbox Archi to SparxEA")>
-<Assembly: AssemblyCopyright("Copyright ©  2017 David ŠKarka")>
+<Assembly: AssemblyCopyright("Copyright ©  2017 David Škarka")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>

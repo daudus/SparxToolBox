@@ -93,4 +93,33 @@
         loadRelationsFileARCHI = mappedRelationsFileARCHI
         lLOG.Info("loadRelationsFileARCHI finished")
     End Function
+    Function saveElementsFileARCHI(ByRef archiElements As Hashtable) As String
+        Dim msg As String = Nothing
+        Dim key As String
+        Dim spin As ConsoleSpiner
+        Dim keys As ICollection
+        Dim elementArchi As ArchiElement
+        Dim stLine As String = ""
+        Dim objWriter As IO.StreamWriter = IO.File.AppendText("c:\Users\david.skarka\Documents\Priv\MTU\test.csv")
+
+        lLOG.Info("saveElementsFileARCHI started")
+        keys = archiElements.Keys
+        spin = New ConsoleSpiner(keys.Count, 1)
+        For Each key In keys
+            spin.Turn()
+            elementArchi = archiElements(key)
+            stLine = ""
+            'objWriter.Write(_CustomerID & ",")
+            'objWriter.Write(_FirstName & ",")
+            'If value contains comma in the value then you have to perform this opertions
+            'Dim append = If(_Msg.Contains(","), String.Format("""{0}""", _Msg), _Msg)
+            'stLine = String.Format("{0}{1},", stLine, append)
+            objWriter.Write(stLine)
+            objWriter.Write(Environment.NewLine)
+        Next key
+        objWriter.Close()
+        spin.Finish()
+        lLOG.Info("saveElementsFileARCHI finished")
+        Return msg
+    End Function
 End Module

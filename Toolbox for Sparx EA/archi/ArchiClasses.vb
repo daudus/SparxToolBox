@@ -75,6 +75,8 @@ Public Class ArchiRelation
     Private pDocumentation As String
     Private pSource As String
     Private pTarget As String
+    Private pGUIDEA As String
+    Private pRelationIDEA As Integer
 
     Sub New(ByVal ID As String, ByVal Type As String, ByVal Name As String, ByVal Documentation As String, ByVal Source As String, ByVal Target As String)
         pID = ID
@@ -138,11 +140,30 @@ Public Class ArchiRelation
             pTarget = value
         End Set
     End Property
+    Public Property GUIDEA() As String
+        Get
+            Return pGUIDEA
+        End Get
+        Set(ByVal value As String)
+            pGUIDEA = value
+        End Set
+    End Property
+    Public Property RelationIDEA() As String
+        Get
+            Return pRelationIDEA
+        End Get
+        Set(ByVal value As String)
+            pRelationIDEA = value
+        End Set
+    End Property
 End Class
 Public Class ArchiProperty
     Private pID As String
     Private pKey As String
     Private pValue As String
+    Private pGUIDEA As String
+    Private pTagValueIDEA As Integer
+
 
     Sub New(ByVal ID As String, ByVal Key As String, ByVal Value As String)
         pID = ID
@@ -174,6 +195,24 @@ Public Class ArchiProperty
         End Get
         Set(ByVal value As String)
             pValue = value
+        End Set
+    End Property
+
+    Public Property GUIDEA() As String
+        Get
+            Return pGUIDEA
+        End Get
+        Set(ByVal value As String)
+            pGUIDEA = value
+        End Set
+    End Property
+
+    Public Property TagValueIDEA() As String
+        Get
+            Return pTagValueIDEA
+        End Get
+        Set(ByVal value As String)
+            pTagValueIDEA = value
         End Set
     End Property
 End Class

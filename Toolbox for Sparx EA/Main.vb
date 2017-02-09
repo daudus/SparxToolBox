@@ -6,7 +6,12 @@
 '  0a inside/between "" is problem
 '  0d 0a inside/between "" is problem
 '  0d 0a    {CR,LF} outside "" is OK.
-'
+'TODO: support oneway update ARCHI2SPARXEA
+'TODO: help about parameters in command line
+'TODO: work without app config file  - default actual dir, naming (model from Archi.Model), default package a default eap name and default archi export file names
+'TODO: reflect package structure in EA. Currently onlz one package is assumend
+'TODO: support diagrams
+'TODO: support twoway update ARCHI<->SPARXEA
 Option Explicit On
 
 <Assembly: log4net.Config.XmlConfigurator(ConfigFile:="log4net.xml", Watch:=True)>
@@ -40,17 +45,18 @@ Module Main
             closeApp()
             Exit Sub
         End If
+        'Call ConnectorTest(Repository)
         ' ... and the proper model
         Model = getModel(Repository)
         If IsNothing(Model) Then
-            lLOG.Fatal("Sparx EA has to have model with gien name: " + My.Settings.SparxEATargetRepostoryModelArchiImported)
+            lLOG.Fatal("Sparx EA has to have model with given name: " + My.Settings.SparxEATargetRepostoryModelArchiImported)
             closeApp()
             Exit Sub
         End If
         ' ... and the proper package
         Package = getPackageFromModel(Model)
         If IsNothing(Package) Then
-            lLOG.Fatal("Sparx EA has to have repository with gien name: " + My.Settings.SparxEATargetRepostoryPackageArchiImported)
+            lLOG.Fatal("Sparx EA has to have repository with given name: " + My.Settings.SparxEATargetRepostoryPackageArchiImported)
             closeApp()
             Exit Sub
         End If
@@ -69,13 +75,15 @@ Module Main
         closeApp()
     End Sub
     Sub createRelationsInEA(ByRef repository As EA.Repository, ByRef archiRelations As Hashtable, ByRef archiElements As Hashtable, ByRef archiProperties As Hashtable)
-        Dim connector As EA.Connector
+        Dim connectorEA As EA.Connector
         Dim client As EA.Element
         Dim supplier As EA.Element
         Dim relationArchi As ArchiRelation
         Dim sourceArchi, targetArchi As ArchiElement
         Dim spin As ConsoleSpiner
-        Dim listMsg As New ArrayList()
+        Dim listMsgError As New ArrayList()
+        Dim listMsgDebug As New ArrayList()
+        Dim msg As String
 
         Dim key As String
         Dim keys As Collections.ICollection
@@ -92,88 +100,87 @@ Module Main
             sourceArchi = archiElements(relationArchi.Source)
             targetArchi = archiElements(relationArchi.Target)
             If IsNothing(sourceArchi) Then
-                listMsg.Add("For relation " + relationArchi.ID + "there is no source element " + relationArchi.Source + " in import files")
+                listMsgError.Add("For relation " + relationArchi.ID + "there is no source element " + relationArchi.Source + " in import files")
             Else
                 supplier = repository.GetElementByID(sourceArchi.ElementIDEA)
                 If IsNothing(targetArchi) Then
-                    listMsg.Add("For relation " + relationArchi.ID + "there is no target element " + relationArchi.Target + " in import files")
+                    listMsgError.Add("For relation " + relationArchi.ID + "there is no target element " + relationArchi.Target + " in import files")
                 Else
                     client = repository.GetElementByID(archiElements(relationArchi.Target).ElementIDEA)
                     stereotype = EAConstants.typeArchi2StereotypeEA(relationArchi.Type.Substring(0, Len(relationArchi.Type) - Len(ArchiConstants.RelationSuffix)))
                     type = EAConstants.stereotype2type(stereotype)
 
-                    connector = supplier.Connectors.AddNew(relationArchi.Name, type)
-                    With connector
-                        .SupplierID = client.ElementID
-                        .Stereotype = EAConstants.metatypeArchimatePrefix & stereotype
-                        .Notes = relationArchi.Documentation
-                        .Direction = EAConstants.connectorDirectionSourceDestination
-                        'TODO: TaggedValues
-                        'TODO: store Archi IDs into EA
-                        'TODO: store EA IDs into Archi
-                        .Update()
-                    End With
+                    connectorEA = supplier.Connectors.AddNew(relationArchi.Name, type)
+                    connectorEA.SupplierID = client.ElementID
+                    If Not connectorEA.Update() Then
+                        listMsgError.Add("Connector with ARCHI ID " + relationArchi.ID + " not created: " + connectorEA.GetLastError)
+                    Else
+                        With connectorEA
+                            .Stereotype = EAConstants.metatypeArchimatePrefix & stereotype
+                            .Notes = relationArchi.Documentation
+                            .Direction = EAConstants.connectorDirectionSourceDestination
+                            'add Tagged Values
+                            msg = _addTaggedValuesConnector(connectorEA, relationArchi, archiProperties)
+                            If Not IsNothing(msg) Then listMsgDebug.Add(msg)
+                            'store EA identifiers into elementArchi
+                            relationArchi.GUIDEA = .ConnectorGUID
+                            relationArchi.RelationIDEA = .ConnectorID
+                            .Update()
+                            .TaggedValues.Refresh()
+                        End With
+                        client.Connectors.Refresh()
+                    End If
                 End If
             End If
         Next key
         spin.Finish()
-        If Not IsNothing(listMsg) Then populateMessageArray(listMsg, Core.Level.Error)
+        If Not IsNothing(listMsgDebug) Then populateMessageArray(listMsgDebug, Core.Level.Debug)
+        If Not IsNothing(listMsgError) Then populateMessageArray(listMsgError, Core.Level.Error)
         lLOG.Info("createRelationsInEA finished")
     End Sub
     Sub createElementsInEA(ByRef package As EA.Package, ByRef archiElements As Hashtable, ByRef archiProperties As Hashtable)
         Dim elementEA As EA.Element
-        Dim taggedValue As EA.TaggedValue
         Dim elementArchi As ArchiElement
-        Dim elementProperty As ArchiProperty
-        Dim listMsg As New ArrayList()
+        Dim listDebugMsg As New ArrayList()
+        Dim msg As String
         Dim spin As ConsoleSpiner
 
         Dim stereotype As String
         Dim type As String
         Dim key As String
         Dim keys As Collections.ICollection
-        Dim properties As ArrayList
+        'Dim properties As ArrayList
 
         lLOG.Info("createElementsInEA started")
         keys = archiElements.Keys
         spin = New ConsoleSpiner(keys.Count, 1)
         For Each key In keys
-            'TODO: listMsg.Add(some error message) if necessary
             spin.Turn()
             elementArchi = archiElements(key)
             stereotype = EAConstants.typeArchi2StereotypeEA(elementArchi.Type)
             If elementArchi.Type.Equals(ArchiConstants.typeModel) Then
                 'nothing. Model root
-                'TODO: work with such model in EA also?
+                'TODO: work with such model in EA also? Maybe create/reuse such model also in EA?
             Else
                 type = EAConstants.stereotype2type(stereotype)
                 elementEA = package.Elements.AddNew(elementArchi.Name, type)
                 With elementEA
-                    '.FQStereotype = EAConstants.metatypeArchimatePrefix & stereotype
-                    .Stereotype = EAConstants.metatypeArchimatePrefix & stereotype
+                    .Stereotype = EAConstants.metatypeArchimatePrefix & stereotype 'prefix is necessary to ensure, that Profile Archimate3 is used!
                     .Author = My.Settings.Author
                     .Notes = elementArchi.Documentation
-                    '.Profile Metatype = EAConstants.metatypeArchimatePrefix & elementArchi.Type
-                    properties = archiProperties(elementArchi.ID)
-                    If Not IsNothing(properties) Then
-                        For Each elementProperty In properties
-                            taggedValue = .TaggedValues.AddNew(elementProperty.Key, elementProperty.Value)
-                            taggedValue.Update()
-                        Next
-                    End If
-                    'add reference to ARCHI model
-                    taggedValue = .TaggedValues.AddNew(EAConstants.taggedValueArchiID, elementArchi.ID)
-                    taggedValue.Update()
-                    .TaggedValues.Refresh()
-                    .Update()
+                    'add Tagged Values
+                    msg = _addTaggedValues(elementEA, elementArchi, archiProperties)
+                    If Not IsNothing(msg) Then listDebugMsg.Add(msg)
                     'store EA identifiers into elementArchi
                     elementArchi.GUIDEA = .ElementGUID
                     elementArchi.ElementIDEA = .ElementID
+                    .TaggedValues.Refresh()
+                    .Update()
                 End With
             End If
         Next key
         spin.Finish()
-        If Not IsNothing(listMsg) Then populateMessageArray(listMsg, Core.Level.Error)
+        If Not IsNothing(listDebugMsg) Then populateMessageArray(listDebugMsg, Core.Level.Debug)
         lLOG.Info("Package is being refreshed")
         package.Elements.Refresh()
         lLOG.Info("Package is refreshed")
@@ -182,6 +189,88 @@ Module Main
         lLOG.Info("Package is updated")
         lLOG.Info("createElementsInEA finished")
     End Sub
+    'TODO: Tagged Values for Connector should be treated separatelly because some error in EA automation interface
+    'Type(TagValue) for Connector is Object and not EA.TaggedValue
+    Function _addTaggedValuesConnector(ByRef connectorEA As EA.Connector, ByRef relationArchi As ArchiRelation, ByRef archiProperties As Hashtable) As String
+        Dim properties As ArrayList
+        Dim taggedValue As Object 'Not EA.TaggedValue because some error in EA automation interface
+        Dim elementProperty As ArchiProperty
+        Dim msg As String = Nothing
+        Dim s As String
+
+        properties = archiProperties(relationArchi.ID)
+        If Not IsNothing(properties) Then
+            For Each elementProperty In properties
+                taggedValue = connectorEA.TaggedValues.AddNew(elementProperty.Key, elementProperty.Value)
+                If Not taggedValue.Update() Then
+                    'TODO: should be in string array and returned as ususally. But currently function returns only one string
+                    'in case of reach the log console output will be slightly corrupted. Nothing else.
+                    lLOG.Error("Tagged Value with Archi ID " + elementProperty.ID + " not created: " + (taggedValue.GetLastError))
+                Else
+                    'store encoded ARCHI ID into tagvalue notes
+                    s = taggedValue.Notes 'is empty
+                    s = s + Replace(ArchiConstants.encodeProperty, ArchiConstants.encodePropertyParameter, elementProperty.ID)
+                    taggedValue.Notes = s
+                    If Not taggedValue.Update() Then
+                        'TODO: should be in string array and returned as ususally. But currently function returns only one string
+                        'in case of reach the log console output will be slightly corrupted. Nothing else.
+                        lLOG.Error("Tagged Value with Archi ID " + elementProperty.ID + " not created: " + (taggedValue.GetLastError))
+                        'store Sparx EA IDs into Archi property
+                    End If
+                    'Again diff between TaggedValues dor element and connector
+                    elementProperty.GUIDEA = taggedValue.TagGUID
+                    elementProperty.TagValueIDEA = taggedValue.TagID
+                End If
+            Next elementProperty
+        Else
+                    msg = "Element does not have any property. So, no Tag_Value was created for archi element: " + relationArchi.ID + ":" + relationArchi.Type + ":" + relationArchi.Name
+        End If
+        'add reference to ARCHI model
+        taggedValue = connectorEA.TaggedValues.AddNew(EAConstants.taggedValueArchiID, relationArchi.ID)
+        If Not taggedValue.Update() Then
+            Console.WriteLine(taggedValue.GetLastError)
+        End If
+        Return msg
+    End Function
+    Function _addTaggedValues(ByRef elementEA As Object, ByRef elementArchi As Object, ByRef archiProperties As Hashtable) As String
+        Dim properties As ArrayList
+        Dim taggedValue As EA.TaggedValue
+        Dim elementProperty As ArchiProperty
+        Dim msg As String = Nothing
+        Dim s As String
+
+        properties = archiProperties(elementArchi.ID)
+        If Not IsNothing(properties) Then
+            For Each elementProperty In properties
+                taggedValue = elementEA.TaggedValues.AddNew(elementProperty.Key, elementProperty.Value)
+                If Not taggedValue.Update() Then
+                    'TODO: should be in string array and returned as ususally. But currently function returns only one string
+                    'in case of reach the log console output will be slightly corrupted. Nothing else.
+                    lLOG.Error("Tagged Value with Archi ID " + elementProperty.ID + " not created: " + (taggedValue.GetLastError))
+                Else
+                    'store encoded ARCHI ID into tagvalue notes
+                    s = taggedValue.Notes 'is empty
+                    s = s + Replace(ArchiConstants.encodeProperty, ArchiConstants.encodePropertyParameter, elementProperty.ID)
+                    taggedValue.Notes = s
+                    If Not taggedValue.Update() Then
+                        'TODO: should be in string array and returned as ususally. But currently function returns only one string
+                        'in case of reach the log console output will be slightly corrupted. Nothing else.
+                        lLOG.Error("Tagged Value with Archi ID " + elementProperty.ID + " not created: " + (taggedValue.GetLastError))
+                        'store Sparx EA IDs into Archi property
+                    End If
+                    'Again diff between TaggedValues dor element and connector
+                    elementProperty.GUIDEA = taggedValue.PropertyGUID
+                    elementProperty.TagValueIDEA = taggedValue.PropertyID
+                End If
+            Next
+        Else
+            msg = "Element does not have any property. So, no Tag_Value was created for archi element: " + elementArchi.ID + ":" + elementArchi.Type + ":" + elementArchi.Name
+        End If
+        'add reference to ARCHI model
+        taggedValue = elementEA.TaggedValues.AddNew(EAConstants.taggedValueArchiID, elementArchi.ID)
+        taggedValue.Update()
+        Return msg
+    End Function
     Sub initApp(ByRef sArgs As String())
         appConfig = New AppConfig(sArgs)
     End Sub
