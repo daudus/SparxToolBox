@@ -14,6 +14,7 @@
 'TODO: reflect package structure in EA. Currently onlz one package is assumend
 'TODO: support diagrams
 'TODO: support twoway update ARCHI<->SPARXEA
+'TODO: composition needs to be fixed  - SourceIsAggregate=2. Direction = Unspecified
 Option Explicit On
 
 <Assembly: log4net.Config.XmlConfigurator(ConfigFile:="log4net.xml", Watch:=True)>
@@ -122,6 +123,13 @@ Module Main
                         listMsgError.Add("Connector with ARCHI ID " + relationArchi.ID + " not created: " + connectorEA.GetLastError)
                     Else
                         With connectorEA
+                            'TODO: for Archimate_Composition.    
+                            '.Direction = "Unspecified"
+                            If stereotype = EAConstants.stereotypeRelationComposition Then
+                                Dim i As Integer
+                                i = .CustomProperties.Count
+                                i = .Properties.Count
+                            End If
                             .Stereotype = EAConstants.metatypeArchimatePrefix & stereotype
                             .Notes = relationArchi.Documentation
                             .Direction = EAConstants.connectorDirectionSourceDestination
