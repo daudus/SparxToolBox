@@ -6,6 +6,9 @@
     Public Const stereotypeArchimatePrefix = "ArchiMate_"
 
     'Archi motivation
+    Public Const stereotypeElementCapability = "ArchiMate_Capability"
+
+    'Archi motivation
     Public Const stereotypeElementGap = "ArchiMate_Gap"
 
     'business
@@ -90,6 +93,7 @@
     Public Const connectorDirectionSourceDestination = "Source -> Destination"
 
     Public Shared ReadOnly stereotype2type As New Hashtable() From {
+                                                        {stereotypeElementCapability, objectTypeClass},
                                                         {stereotypeElementBusinessActor, objectTypeClass},
                                                         {stereotypeElementBusinessRole, objectTypeClass},
                                                         {stereotypeElementBusinessCollaboration, objectTypeClass},

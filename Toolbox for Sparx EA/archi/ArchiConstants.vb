@@ -9,6 +9,8 @@
     Public Const typeModel = "ArchimateModel"
     Public Const RelationSuffix = "Relationship"
 
+    'Strategy
+    Public Const typeElementCapability = "Capability"
 
     'motivation
     Public Const typeElementGap = "Gap"
