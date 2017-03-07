@@ -176,7 +176,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("HumaInn")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("HuMaInn")>  _
         Public Property Author() As String
             Get
                 Return CType(Me("Author"),String)

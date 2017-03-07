@@ -33,7 +33,7 @@
       <Value Profile="(Default)">Global</Value>
     </Setting>
     <Setting Name="Author" Type="System.String" Scope="User">
-      <Value Profile="(Default)">HumaInn</Value>
+      <Value Profile="(Default)">HuMaInn</Value>
     </Setting>
   </Settings>
 </SettingsFile>

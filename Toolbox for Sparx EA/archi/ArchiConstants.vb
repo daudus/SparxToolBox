@@ -23,13 +23,18 @@
     Public Const typeElementNode = "Node"
     Public Const typeElementSystemSoftware = "SystemSoftware"
     Public Const typeElementTechnologyInterface = "TechnologyInterface"
+    Public Const typeElementTechnologyprocess = "TechnologyProcess"
+    Public Const typeElementTechnologyFunction = "TechnologyFunction"
     Public Const typeElementTechnologyService = "TechnologyService"
+    Public Const typeElementTechnologyArtifact = "Artifact"
+    Public Const typeElementTechnologyDevice = "Device"
 
     'application
     Public Const typeElementAppComponent = "ApplicationComponent"
     Public Const typeElementAppFunction = "ApplicationFunction"
     Public Const typeElementAppService = "ApplicationService"
     Public Const typeElementAppInterface = "ApplicationInterface"
+    Public Const typeElementAppEvent = "ApplicationEvent"
 
     'relation
     Public Const typeRelationRealization = "RealizationRelationship"

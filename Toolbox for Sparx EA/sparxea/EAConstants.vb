@@ -34,7 +34,7 @@
     Public Const stereotypeElementApplicationCollaboration = "ArchiMate_ApplicationCollaboration"
     Public Const stereotypeElementApplicationProcess = "ArchiMate_ApplicationProcess"
     Public Const stereotypeElementApplicationInteraction = "ArchiMate_ApplicationInteraction"
-    Public Const stereotypeElementApplicationEvent = "ArchiMate_Applicationevent"
+    Public Const stereotypeElementApplicationEvent = "ArchiMate_ApplicationEvent"
     Public Const stereotypeElementDataObject = "ArchiMate_DataObject"
 
     'technology
