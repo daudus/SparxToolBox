@@ -3,12 +3,14 @@
         Dim EAapp As Object = Nothing
         lLOG.Info("Getting the Sparx EA application instance")
         Try
-            EAapp = GetObject(, "EA.App")
+            EAapp = GetObject(, EAConstants.activeXEA)
         Catch e As Exception
+            lLOG.Info("No Sparx EA instance is running ...")
             lLOG.Debug(e.Message)
         End Try
         If IsNothing(EAapp) Then
-            EAapp = CreateObject("EA.App")
+            lLOG.Info("Try to create new Sparx EA instance ...")
+            EAapp = CreateObject(EAConstants.activeXEA)
             lLOG.Info("New Sparx EA application instance was created")
             EAapp.Repository.OpenFile(My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile)
             lLOG.Info("Repository loaded: " & My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile)

@@ -125,6 +125,7 @@ Module Main
                         With connectorEA
                             'TODO: for Archimate_Composition.    
                             '.Direction = "Unspecified"
+                            '.SourceIsAggregate=2
                             If stereotype = EAConstants.stereotypeRelationComposition Then
                                 Dim i As Integer
                                 i = .CustomProperties.Count
