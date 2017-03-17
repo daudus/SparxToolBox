@@ -42,6 +42,11 @@ Module Main
         End Try
         'gets the Sparx EA application reference
         EAapp = getApp()
+        If IsNothing(EAapp) Then
+            lLOG.Fatal("Sparx EA cannot start")
+            closeApp()
+            Exit Sub
+        End If
         ' ... and the proper repository
         Repository = getRepository(EAapp)
         If IsNothing(Repository) Then

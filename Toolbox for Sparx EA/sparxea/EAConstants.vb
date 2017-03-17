@@ -1,5 +1,5 @@
 ﻿Public Class EAConstants
-    Public Const activeXEA = "App.EA"
+    Public Const activeXEA = "EA.App"
     Public Const encodePropertyParameter = "%s" '%s is replaceable parameter
     Public Const encodeProperty = "{ARCHIPROPID:" + encodePropertyParameter + ":}"
     Public Const taggedValueArchiID = "ARCHI_ID"

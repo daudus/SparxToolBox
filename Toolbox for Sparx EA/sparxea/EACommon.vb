@@ -1,6 +1,6 @@
 ﻿Module EACommon
     Function getApp() As Object
-        Dim EAapp As Object = Nothing
+        Dim EAapp As EA.App = Nothing
         lLOG.Info("Getting the Sparx EA application instance")
         Try
             EAapp = GetObject(, EAConstants.activeXEA)
@@ -8,21 +8,25 @@
             lLOG.Info("No Sparx EA instance is running ...")
             lLOG.Debug(e.Message)
         End Try
-        If IsNothing(EAapp) Then
-            lLOG.Info("Try to create new Sparx EA instance ...")
-            EAapp = CreateObject(EAConstants.activeXEA)
-            lLOG.Info("New Sparx EA application instance was created")
-            EAapp.Repository.OpenFile(My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile)
-            lLOG.Info("Repository loaded: " & My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile)
-        Else
-            lLOG.Info("Running Sparx EA application instance will be used")
-            lLOG.Info("Repository already opened: " & EAapp.Repository.ConnectionString)
-        End If
-        EAapp.Visible = True
-        If String.Compare(UCase(EAapp.Repository.ConnectionString), UCase(My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile)) <> 0 Then
-            lLOG.Fatal("Wrong Repository Detected. Opened <" & EAapp.Repository.ConnectionString & "> but expected <" & My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile & "> ")
-            close(EAapp, EAapp.Repository, True)
-        End If
+        Try
+            If IsNothing(EAapp) Then
+                lLOG.Info("Try to create new Sparx EA instance ...")
+                EAapp = CreateObject(EAConstants.activeXEA)
+                lLOG.Info("New Sparx EA application instance was created")
+                EAapp.Repository.OpenFile(My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile)
+                lLOG.Info("Repository loaded: " & My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile)
+            Else
+                lLOG.Info("Running Sparx EA application instance will be used")
+                lLOG.Info("Repository already opened: " & EAapp.Repository.ConnectionString)
+            End If
+            EAapp.Visible = True
+            If String.Compare(UCase(EAapp.Repository.ConnectionString), UCase(My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile)) <> 0 Then
+                lLOG.Fatal("Wrong Repository Detected. Opened <" & EAapp.Repository.ConnectionString & "> but expected <" & My.Settings.SparxEATargetRepostoryDirectory & My.Settings.SparxEATargetRepostoryFile & "> ")
+                close(EAapp, EAapp.Repository, True)
+            End If
+        Catch ee As Exception
+            lLOG.Fatal("something wrong during creating the Sparx EA instance ... " + ee.Message)
+        End Try
         Return EAapp
     End Function
 
