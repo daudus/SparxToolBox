@@ -70,10 +70,10 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>8D38A8DE402F3889FEAB8C07D3E6A10D56C5B804</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>2AF4FB6A91E14A3B1CECD4AEA1A4166965C6DB18</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Toolbox for Sparx EA_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Toolbox for Sparx EA_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>false</GenerateManifests>
@@ -160,7 +160,7 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
-    <None Include="Toolbox for Sparx EA_TemporaryKey.pfx" />
+    <None Include="Toolbox for Sparx EA_1_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="EA">
