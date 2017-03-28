@@ -68,7 +68,9 @@
             GC.Collect()
             GC.WaitForPendingFinalizers()
         Else
-            lLOG.Info("Sparx EA Repository is still running!")
+            If Not IsNothing(EAapp) then
+                lLOG.Info("Sparx EA Repository is still running!")
+            End If
         End If
     End Sub
 
