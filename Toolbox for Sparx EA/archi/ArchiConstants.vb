@@ -1,4 +1,6 @@
 ﻿Public Class ArchiConstants
+    'The name of property in foreign model for xreferrence purpose
+    Public Const taggedValueArchiID = "ARCHI_ID"
     Public Const csvDelimiter = ","
     Public Const csvQualifier = """"
     Public Shared ReadOnly columsMappedElementsFileARCHI As String() = {"ID", "Type", "Name", "Documentation"}

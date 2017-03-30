@@ -2,7 +2,6 @@
     Public Const activeXEA = "EA.App"
     Public Const encodePropertyParameter = "%s" '%s is replaceable parameter
     Public Const encodeProperty = "{ARCHIPROPID:" + encodePropertyParameter + ":}"
-    Public Const taggedValueArchiID = "ARCHI_ID"
     Public Const metatypeArchimatePrefix = "ArchiMate3::"
     Public Const stereotypeArchimatePrefix = "ArchiMate_"
 
@@ -148,11 +147,11 @@
                                                         {stereotypeRelationFlow, connectorTypeControlFlow},
                                                         {stereotypeRelationSpecialization, connectorTypeGeneralization}}
 
-    Public Shared Function typeArchi2StereotypeEA(typeArchi As String) As String
+    Public Shared Function TypeArchi2StereotypeEA(typeArchi As String) As String
         Return stereotypeArchimatePrefix & typeArchi
     End Function
 
-    Public Shared Function stereotypeEA2StypeEA(stereotypeEA As String) As String
+    Public Shared Function StereotypeEA2StypeEA(stereotypeEA As String) As String
         Return stereotype2type(stereotypeEA)
     End Function
 

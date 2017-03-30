@@ -25,7 +25,7 @@ Module Main
     Dim Repository As EA.Repository
     Dim Package As EA.Package
 
-    Dim mappedElementsFileARCHI As New Hashtable
+    Dim mappedElementsFileARCHI As New Hashtable 'TODO: use dictionary. Dim peopleHashtable As New Dictionary(Of String, Person)
     Dim columsMappedElementsFileARCHI As String()
     Dim mappedPropertiesFileARCHI As New Hashtable
     Dim columsMappedPropertiesFileARCHI As String()
@@ -80,9 +80,9 @@ Module Main
         'read and map elements from ARCHI export
         'has to be last; after properties and relations!
         mappedElementsFileARCHI = loadElementsFileARCHI()
-        columsMappedElementsFileARCHI = ArchiElement.columnNames
-        columsMappedPropertiesFileARCHI = ArchiProperty.columnNames
-        columsMappedrelationsFileARCHI = ArchiRelation.columnNames
+        columsMappedElementsFileARCHI = ArchiElement.GetFieldNamesCSV
+        columsMappedPropertiesFileARCHI = ArchiProperty.GetFieldNamesCSV
+        columsMappedrelationsFileARCHI = ArchiRelation.GetFieldNamesCSV
         CreateElementsInEA(Package, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
         CreateRelationsInEA(Repository, mappedRelationsFileARCHI, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
         SaveElementsFileARCHI(columsMappedElementsFileARCHI, mappedElementsFileARCHI)
@@ -121,11 +121,11 @@ Module Main
             If IsNothing(sourceArchi) Then
                 listMsgError.Add("For relation " + relationArchi.ID + "there is no source element " + relationArchi.Source + " in import files")
             Else
-                supplier = repository.GetElementByID(sourceArchi.ElementIDEA)
+                supplier = repository.GetElementByID(sourceArchi.FK2)
                 If IsNothing(targetArchi) Then
                     listMsgError.Add("For relation " + relationArchi.ID + "there is no target element " + relationArchi.Target + " in import files")
                 Else
-                    client = repository.GetElementByID(archiElements(relationArchi.Target).ElementIDEA)
+                    client = repository.GetElementByID(archiElements(relationArchi.Target).FK2)
                     stereotype = EAConstants.typeArchi2StereotypeEA(relationArchi.Type.Substring(0, Len(relationArchi.Type) - Len(ArchiConstants.RelationSuffix)))
                     type = EAConstants.stereotype2type(stereotype)
 
@@ -150,8 +150,8 @@ Module Main
                             msg = _addTaggedValuesConnector(connectorEA, relationArchi, archiProperties)
                             If Not IsNothing(msg) Then listMsgDebug.Add(msg)
                             'store EA identifiers into elementArchi
-                            relationArchi.GUIDEA = .ConnectorGUID
-                            relationArchi.RelationIDEA = .ConnectorID
+                            relationArchi.FK = .ConnectorGUID
+                            relationArchi.FK2 = .ConnectorID
                             'TODO:create correspondend property in archiProperties
                             '
                             .Update()
@@ -201,8 +201,8 @@ Module Main
                     msg = _addTaggedValues(elementEA, elementArchi, archiProperties)
                     If Not IsNothing(msg) Then listDebugMsg.Add(msg)
                     'store EA identifiers into elementArchi
-                    elementArchi.GUIDEA = .ElementGUID
-                    elementArchi.ElementIDEA = .ElementID
+                    elementArchi.FK = .ElementGUID
+                    elementArchi.FK2 = .ElementID
                     'TODO:create correspondend property in archiProperties
                     '
                     .TaggedValues.Refresh()
@@ -249,8 +249,8 @@ Module Main
                         'store Sparx EA IDs into Archi property
                     End If
                     'Again diff between TaggedValues for element and connector
-                    elementProperty.GUIDEA = taggedValue.TagGUID
-                    elementProperty.TagValueIDEA = taggedValue.TagID
+                    elementProperty.FK = taggedValue.TagGUID
+                    elementProperty.FK2 = taggedValue.TagID
                     'TODO:create and encode into corresponden property in archiProperties into documentation
                     '
                 End If
@@ -259,7 +259,7 @@ Module Main
             msg = "Element does not have any property. So, no Tag_Value was created for archi element: " + relationArchi.ID + ":" + relationArchi.Type + ":" + relationArchi.Name
         End If
         'add reference to ARCHI model
-        taggedValue = connectorEA.TaggedValues.AddNew(EAConstants.taggedValueArchiID, relationArchi.ID)
+        taggedValue = connectorEA.TaggedValues.AddNew(ArchiConstants.taggedValueArchiID, relationArchi.ID)
         If Not taggedValue.Update() Then
             Console.WriteLine(taggedValue.GetLastError)
         End If
@@ -293,8 +293,8 @@ Module Main
                         'store Sparx EA IDs into Archi property
                     End If
                     'Again diff between TaggedValues for element and connector
-                    elementProperty.GUIDEA = taggedValue.PropertyGUID
-                    elementProperty.TagValueIDEA = taggedValue.PropertyID
+                    elementProperty.FK = taggedValue.PropertyGUID
+                    elementProperty.FK2 = taggedValue.PropertyID
                     'TODO:create and encode into corresponden property in archiProperties into documentation
                     '
                 End If
@@ -303,7 +303,7 @@ Module Main
             msg = "Element does not have any property. So, no Tag_Value was created for archi element: " + elementArchi.ID + ":" + elementArchi.Type + ":" + elementArchi.Name
         End If
         'add reference to ARCHI model
-        taggedValue = elementEA.TaggedValues.AddNew(EAConstants.taggedValueArchiID, elementArchi.ID)
+        taggedValue = elementEA.TaggedValues.AddNew(ArchiConstants.taggedValueArchiID, elementArchi.ID)
         taggedValue.Update()
         Return msg
     End Function
