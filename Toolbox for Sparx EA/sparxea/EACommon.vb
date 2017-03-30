@@ -1,5 +1,5 @@
 ﻿Module EACommon
-    Function getApp() As Object
+    Function GetApp() As Object
         Dim EAapp As EA.App = Nothing
         lLOG.Info("Getting the Sparx EA application instance")
         Try
@@ -30,18 +30,18 @@
         Return EAapp
     End Function
 
-    Function getRepository(ByRef EAapp As Object) As EA.Repository
+    Function GetRepository(ByRef EAapp As Object) As EA.Repository
         Return EAapp.Repository
     End Function
 
-    Function getModel(ByRef repository As EA.Repository) As Object
+    Function GetModel(ByRef repository As EA.Repository) As Object
         Dim found As Boolean = False
         Dim model As Object = Nothing
         Dim idx As Integer = 0
 
         lLOG.Info("Finding model in EA Repository: " + My.Settings.SparxEATargetRepostoryModelArchiImported)
         While (Not found) And (idx < repository.Models.Count)
-            model = repository.Models.GetAt(0)
+            model = repository.Models.GetAt(idx)
             lLOG.Debug("EA model: " + model.Name)
             If model.Name.Equals(My.Settings.SparxEATargetRepostoryModelArchiImported) Then
                 found = True
@@ -54,11 +54,20 @@
         If Not found Then
             model = Nothing
             lLOG.Error("Model " + My.Settings.SparxEATargetRepostoryModelArchiImported + " not found.")
+            lLOG.Info("Try to crete model " + My.Settings.SparxEATargetRepostoryModelArchiImported)
+            model = repository.Models.AddNew(My.Settings.SparxEATargetRepostoryModelArchiImported, "")
+            If Not model.Update() Then
+                lLOG.Fatal("Model " + My.Settings.SparxEATargetRepostoryModelArchiImported + " not created due to: " & model.GetLastError())
+                model = Nothing
+            Else
+                repository.Models.Refresh()
+                lLOG.Info("Model " + My.Settings.SparxEATargetRepostoryModelArchiImported + " successfuly created")
+            End If
         End If
         Return model
     End Function
 
-    Sub close(ByRef EAapp As Object, ByRef Repository As EA.Repository, close As Boolean)
+    Sub Close(ByRef EAapp As Object, ByRef Repository As EA.Repository, close As Boolean)
         lLOG.Info("System is being to be closed")
         If close Then
             lLOG.Info("Sparx EA Repository as well as Sparx EA Application is being to be closed")
@@ -68,7 +77,7 @@
             GC.Collect()
             GC.WaitForPendingFinalizers()
         Else
-            If Not IsNothing(EAapp) then
+            If Not IsNothing(EAapp) Then
                 lLOG.Info("Sparx EA Repository is still running!")
             End If
         End If
@@ -86,7 +95,7 @@
         ' manipulation later on
         Return Left(typeLib.Guid(), 38)
     End Function
-    Function getPackageFromModel(ByRef model As Object) As EA.Package
+    Function GetPackageFromModel(ByRef model As Object) As EA.Package
         Dim found As Boolean = False
         Dim package As EA.Package = Nothing
         Dim idx As Integer = 0
@@ -109,11 +118,20 @@
         If Not found Then
             package = Nothing
             lLOG.Error("Package " + My.Settings.SparxEATargetRepostoryPackageArchiImported + " not found.")
+            lLOG.Info("Try to crete package " + My.Settings.SparxEATargetRepostoryPackageArchiImported)
+            package = model.Packages.AddNew(My.Settings.SparxEATargetRepostoryPackageArchiImported, "UNKNOWN")
+            If Not package.Update() Then
+                lLOG.Fatal("Package " + My.Settings.SparxEATargetRepostoryPackageArchiImported + " not created due to: " & package.GetLastError())
+                package = Nothing
+            Else
+                model.Packages.Refresh()
+                lLOG.Info("Package " + My.Settings.SparxEATargetRepostoryPackageArchiImported + " successfuly created")
+            End If
         End If
         Return package
     End Function
 
-    Function getPackage(ByRef name As String, ByVal contextPackage As EA.Package) As EA.Package
+    Function GetPackage(ByRef name As String, ByVal contextPackage As EA.Package) As EA.Package
         Dim package As EA.Package = Nothing
         Dim found As Boolean = False
         Dim idx As Integer = 0
@@ -125,7 +143,7 @@
                 found = True
             Else
                 idx = idx + 1
-                package = getPackage(name, package)
+                package = GetPackage(name, package)
                 If Not IsNothing(package) Then
                     found = True
                 End If

@@ -15,7 +15,7 @@ Option Explicit On
 Namespace My
     
     <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0"),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.0.1.0"),  _
      Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -29,7 +29,7 @@ Namespace My
     Private Shared addedHandlerLockObject As New Object
 
     <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(), Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)> _
-    Private Shared Sub AutoSaveSettings(ByVal sender As Global.System.Object, ByVal e As Global.System.EventArgs)
+    Private Shared Sub AutoSaveSettings(sender As Global.System.Object, e As Global.System.EventArgs)
         If My.Application.SaveMySettingsOnExit Then
             My.Settings.Save()
         End If
@@ -56,7 +56,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("c:\Users\david.skarka\Documents\Priv\MTU\")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("c:\Users\Daudus\Documents\priv\MTU\")>  _
         Public Property ArchiImportDirectory() As String
             Get
                 Return CType(Me("ArchiImportDirectory"),String)
@@ -116,18 +116,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("c:\Users\david.skarka\Documents\Priv\MTU\")>  _
-        Public Property SparxEATargetRepostoryDirectory() As String
-            Get
-                Return CType(Me("SparxEATargetRepostoryDirectory"),String)
-            End Get
-            Set
-                Me("SparxEATargetRepostoryDirectory") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("MTU2.eap")>  _
         Public Property SparxEATargetRepostoryFile() As String
             Get
@@ -164,7 +152,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Global")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("FromARCHI")>  _
         Public Property SparxEATargetRepostoryModelArchiImported() As String
             Get
                 Return CType(Me("SparxEATargetRepostoryModelArchiImported"),String)
@@ -183,6 +171,30 @@ Namespace My
             End Get
             Set
                 Me("Author") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("c:\Users\Daudus\Documents\priv\MTU\")>  _
+        Public Property SparxEATargetRepostoryDirectory() As String
+            Get
+                Return CType(Me("SparxEATargetRepostoryDirectory"),String)
+            End Get
+            Set
+                Me("SparxEATargetRepostoryDirectory") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("ex_")>  _
+        Public Property ArchiExportFilePrefix() As String
+            Get
+                Return CType(Me("ArchiExportFilePrefix"),String)
+            End Get
+            Set
+                Me("ArchiExportFilePrefix") = value
             End Set
         End Property
     End Class

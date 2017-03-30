@@ -28,7 +28,9 @@ Module Main
     Dim mappedElementsFileARCHI As New Hashtable
     Dim columsMappedElementsFileARCHI As String()
     Dim mappedPropertiesFileARCHI As New Hashtable
+    Dim columsMappedPropertiesFileARCHI As String()
     Dim mappedRelationsFileARCHI As New Hashtable
+    Dim columsMappedrelationsFileARCHI As String()
     Dim appConfig As AppConfig
 
     Sub Main(ByVal sArgs As String())
@@ -78,15 +80,20 @@ Module Main
         'read and map elements from ARCHI export
         'has to be last; after properties and relations!
         mappedElementsFileARCHI = loadElementsFileARCHI()
-        columsMappedElementsFileARCHI = mappedElementsFileARCHI(ArchiConstants.columsMappedElementsFileARCHI(0)).toStringArray 'ID
-        mappedElementsFileARCHI.Remove(ArchiConstants.columsMappedElementsFileARCHI(0)) 'removes row with names of columns
-        createElementsInEA(Package, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
-        createRelationsInEA(Repository, mappedRelationsFileARCHI, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
-        saveElementsFileARCHI(columsMappedElementsFileARCHI, mappedElementsFileARCHI)
+        columsMappedElementsFileARCHI = ArchiElement.columnNames
+        columsMappedPropertiesFileARCHI = ArchiProperty.columnNames
+        columsMappedrelationsFileARCHI = ArchiRelation.columnNames
+        CreateElementsInEA(Package, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
+        CreateRelationsInEA(Repository, mappedRelationsFileARCHI, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
+        SaveElementsFileARCHI(columsMappedElementsFileARCHI, mappedElementsFileARCHI)
+        SaveRelationsFileARCHI(columsMappedrelationsFileARCHI, mappedRelationsFileARCHI)
+        SavePropertiesFileARCHI(columsMappedPropertiesFileARCHI, mappedPropertiesFileARCHI)
+        'TODO: saveRelationshipsFileARCHI
+        'TODO: savePropertiesFileARCHI
         'finishing the system
-        closeApp()
+        CloseApp()
     End Sub
-    Sub createRelationsInEA(ByRef repository As EA.Repository, ByRef archiRelations As Hashtable, ByRef archiElements As Hashtable, ByRef archiProperties As Hashtable)
+    Sub CreateRelationsInEA(ByRef repository As EA.Repository, ByRef archiRelations As Hashtable, ByRef archiElements As Hashtable, ByRef archiProperties As Hashtable)
         Dim connectorEA As EA.Connector
         Dim client As EA.Element
         Dim supplier As EA.Element
@@ -156,11 +163,11 @@ Module Main
             End If
         Next key
         spin.Finish()
-        If Not IsNothing(listMsgDebug) Then populateMessageArray(listMsgDebug, Core.Level.Debug)
-        If Not IsNothing(listMsgError) Then populateMessageArray(listMsgError, Core.Level.Error)
+        If Not IsNothing(listMsgDebug) Then PopulateMessageArray(listMsgDebug, Core.Level.Debug)
+        If Not IsNothing(listMsgError) Then PopulateMessageArray(listMsgError, Core.Level.Error)
         lLOG.Info("createRelationsInEA finished")
     End Sub
-    Sub createElementsInEA(ByRef package As EA.Package, ByRef archiElements As Hashtable, ByRef archiProperties As Hashtable)
+    Sub CreateElementsInEA(ByRef package As EA.Package, ByRef archiElements As Hashtable, ByRef archiProperties As Hashtable)
         Dim elementEA As EA.Element
         Dim elementArchi As ArchiElement
         Dim listDebugMsg As New ArrayList()
@@ -204,7 +211,7 @@ Module Main
             End If
         Next key
         spin.Finish()
-        If Not IsNothing(listDebugMsg) Then populateMessageArray(listDebugMsg, Core.Level.Debug)
+        If Not IsNothing(listDebugMsg) Then PopulateMessageArray(listDebugMsg, Core.Level.Debug)
         lLOG.Info("Package is being refreshed")
         package.Elements.Refresh()
         lLOG.Info("Package is refreshed")
@@ -300,10 +307,10 @@ Module Main
         taggedValue.Update()
         Return msg
     End Function
-    Sub initApp(ByRef sArgs As String())
+    Sub InitApp(ByRef sArgs As String())
         appConfig = New AppConfig(sArgs)
     End Sub
-    Sub closeApp()
+    Sub CloseApp()
         mappedElementsFileARCHI.Clear()
         mappedElementsFileARCHI = Nothing
         mappedPropertiesFileARCHI.Clear()

@@ -58,14 +58,17 @@
         End Set
     End Property
 
-    Public Property ElementIDEA() As String
+    Public Property ElementIDEA() As Integer
         Get
             Return pElementIDEA
         End Get
-        Set(ByVal value As String)
+        Set(ByVal value As Integer)
             pElementIDEA = value
         End Set
     End Property
+
+    'original format of CSV export file
+    Public Shared columnNames As String() = {"ID", "Type", "Name", "Documentation"}
     Public Function toStringArray() As String()
         Dim s() As String = {ID, Type, Name, Documentation}
         Return s
@@ -151,14 +154,21 @@ Public Class ArchiRelation
             pGUIDEA = value
         End Set
     End Property
-    Public Property RelationIDEA() As String
+    Public Property RelationIDEA() As Integer
         Get
             Return pRelationIDEA
         End Get
-        Set(ByVal value As String)
+        Set(ByVal value As Integer)
             pRelationIDEA = value
         End Set
     End Property
+
+    'original format of CSV export file
+    Public Shared columnNames As String() = {"ID", "Type", "Name", "Documentation", "Source", "Target"}
+    Public Function toStringArray() As String()
+        Dim s() As String = {ID, Type, Name, Documentation, Source, Target}
+        Return s
+    End Function
 End Class
 Public Class ArchiProperty
     Private pID As String
@@ -166,7 +176,7 @@ Public Class ArchiProperty
     Private pValue As String
     Private pGUIDEA As String
     Private pTagValueIDEA As Integer
-
+    Private pType As Integer 'original or ForeignKey store: ArchiConstants.PropertyType
 
     Sub New(ByVal ID As String, ByVal Key As String, ByVal Value As String)
         pID = ID
@@ -210,12 +220,19 @@ Public Class ArchiProperty
         End Set
     End Property
 
-    Public Property TagValueIDEA() As String
+    Public Property TagValueIDEA() As Integer
         Get
             Return pTagValueIDEA
         End Get
-        Set(ByVal value As String)
+        Set(ByVal value As Integer)
             pTagValueIDEA = value
         End Set
     End Property
+
+    'original format of CSV export file
+    Public Shared columnNames As String() = {"ID", "Key", "Value"}
+    Public Function toStringArray() As String()
+        Dim s() As String = {ID, Key, Value}
+        Return s
+    End Function
 End Class

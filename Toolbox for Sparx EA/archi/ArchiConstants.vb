@@ -9,6 +9,10 @@
     Public Const typeModel = "ArchimateModel"
     Public Const RelationSuffix = "Relationship"
 
+    Public Class PropertyType
+        Public Const propertyTypeOriginal = 0
+        Public Const propertyTypeForeignKey = 1
+    End Class
     'Strategy
     Public Const typeElementCapability = "Capability"
 

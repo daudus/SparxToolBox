@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ArchiImportDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">c:\Users\david.skarka\Documents\Priv\MTU\</Value>
+      <Value Profile="(Default)">c:\Users\Daudus\Documents\priv\MTU\</Value>
     </Setting>
     <Setting Name="ArchiImportFileElements" Type="System.String" Scope="User">
       <Value Profile="(Default)">elements.csv</Value>
@@ -17,9 +17,6 @@
     <Setting Name="ArchiImportFileFormat" Type="System.String" Scope="User">
       <Value Profile="(Default)">csv</Value>
     </Setting>
-    <Setting Name="SparxEATargetRepostoryDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">c:\Users\david.skarka\Documents\Priv\MTU\</Value>
-    </Setting>
     <Setting Name="SparxEATargetRepostoryFile" Type="System.String" Scope="User">
       <Value Profile="(Default)">MTU2.eap</Value>
     </Setting>
@@ -30,10 +27,16 @@
       <Value Profile="(Default)">importedFromArchi</Value>
     </Setting>
     <Setting Name="SparxEATargetRepostoryModelArchiImported" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Global</Value>
+      <Value Profile="(Default)">FromARCHI</Value>
     </Setting>
     <Setting Name="Author" Type="System.String" Scope="User">
       <Value Profile="(Default)">HuMaInn</Value>
+    </Setting>
+    <Setting Name="SparxEATargetRepostoryDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\Users\Daudus\Documents\priv\MTU\</Value>
+    </Setting>
+    <Setting Name="ArchiExportFilePrefix" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ex_</Value>
     </Setting>
   </Settings>
 </SettingsFile>
