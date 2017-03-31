@@ -6,15 +6,13 @@
 '  0a inside/between "" is problem
 '  0d 0a inside/between "" is problem
 '  0d 0a    {CR,LF} outside "" is OK.
-'TODO: save connectorsArchi
-'TODO: save propertiesArchi
+'TODO: property for property. Where stored EA.xref in ARCHI? In EA there is possibility into TagValue documentation ......example code is in early versions of Main.Create?????
 'TODO: support oneway update ARCHI2SPARXEA
 'TODO: help about parameters in command line
-'TODO: work without app config file  - default actual dir, naming (model from Archi.Model), default package a default eap name and default archi export file names
 'TODO: reflect package structure in EA. Currently onlz one package is assumend
 'TODO: support diagrams
 'TODO: support twoway update ARCHI<->SPARXEA
-'TODO: composition needs to be fixed  - SourceIsAggregate=2. Direction = Unspecified
+'TODO: composition needs to be fixed  - SourceIsAggregate=2. Direction = Unspecified. Still actual?
 Option Explicit On
 
 <Assembly: log4net.Config.XmlConfigurator(ConfigFile:="log4net.xml", Watch:=True)>
@@ -152,8 +150,6 @@ Module Main
                             'store EA identifiers into elementArchi
                             relationArchi.FK = .ConnectorGUID
                             relationArchi.FK2 = .ConnectorID
-                            'TODO:create correspondend property in archiProperties
-                            '
                             .Update()
                             .TaggedValues.Refresh()
                         End With
@@ -203,8 +199,6 @@ Module Main
                     'store EA identifiers into elementArchi
                     elementArchi.FK = .ElementGUID
                     elementArchi.FK2 = .ElementID
-                    'TODO:create correspondend property in archiProperties
-                    '
                     .TaggedValues.Refresh()
                     .Update()
                 End With
@@ -225,44 +219,42 @@ Module Main
     Function _addTaggedValuesConnector(ByRef connectorEA As EA.Connector, ByRef relationArchi As ArchiRelation, ByRef archiProperties As Hashtable) As String
         Dim properties As ArrayList
         Dim taggedValue As Object 'Not EA.TaggedValue because some error in EA automation interface
-        Dim elementProperty As ArchiProperty
+        Dim connectorProperty As ArchiProperty
+        Dim archiPropertyArray As ArrayList
+
         Dim msg As String = Nothing
-        Dim s As String
 
         properties = archiProperties(relationArchi.ID)
         If Not IsNothing(properties) Then
-            For Each elementProperty In properties
-                taggedValue = connectorEA.TaggedValues.AddNew(elementProperty.Key, elementProperty.Value)
+            For Each connectorProperty In properties
+                taggedValue = connectorEA.TaggedValues.AddNew(connectorProperty.Key, connectorProperty.Value)
                 If Not taggedValue.Update() Then
                     'TODO: should be in string array and returned as ususally. But currently function returns only one string
                     'in case of reach the log console output will be slightly corrupted. Nothing else.
-                    lLOG.Error("Tagged Value with Archi ID " + elementProperty.ID + " not created: " + (taggedValue.GetLastError))
+                    lLOG.Error("Tagged Value with Archi ID " + connectorProperty.ID + " not created: " + (taggedValue.GetLastError))
                 Else
-                    'store encoded ARCHI ID into tagvalue notes
-                    s = taggedValue.Notes 'is empty
-                    s = s + Replace(ArchiConstants.encodeProperty, ArchiConstants.encodePropertyParameter, elementProperty.ID)
-                    taggedValue.Notes = s
                     If Not taggedValue.Update() Then
                         'TODO: should be in string array and returned as ususally. But currently function returns only one string
                         'in case of reach the log console output will be slightly corrupted. Nothing else.
-                        lLOG.Error("Tagged Value with Archi ID " + elementProperty.ID + " not created: " + (taggedValue.GetLastError))
-                        'store Sparx EA IDs into Archi property
+                        lLOG.Error("Tagged Value with Archi ID " + connectorProperty.ID + " not created: " + (taggedValue.GetLastError))
                     End If
-                    'Again diff between TaggedValues for element and connector
-                    elementProperty.FK = taggedValue.TagGUID
-                    elementProperty.FK2 = taggedValue.TagID
-                    'TODO:create and encode into corresponden property in archiProperties into documentation
-                    '
+                    'xreference
+                    connectorProperty.FK = taggedValue.TagGUID
+                    connectorProperty.FK2 = taggedValue.TagID
                 End If
-            Next elementProperty
+            Next connectorProperty
         Else
             msg = "Element does not have any property. So, no Tag_Value was created for archi element: " + relationArchi.ID + ":" + relationArchi.Type + ":" + relationArchi.Name
         End If
         'add reference to ARCHI model
         taggedValue = connectorEA.TaggedValues.AddNew(ArchiConstants.taggedValueArchiID, relationArchi.ID)
         If Not taggedValue.Update() Then
-            Console.WriteLine(taggedValue.GetLastError)
+            lLOG.Error("xreference tagged value for archi connector: " + relationArchi.ToString + " in Sparx EA not created due to: " + taggedValue.GetLastError)
         End If
+        'addd reference to EA model. create corresponding property in archiProperties for future sync
+        connectorProperty = New ArchiProperty("", relationArchi.ID, EAConstants.taggedValueEAID, connectorEA.ConnectorGUID, ArchiConstants.PropertyType.propertyTypeForeignKey)
+        archiPropertyArray = archiProperties.Item(relationArchi.ID)
+        archiPropertyArray.Add(connectorProperty)
         Return msg
     End Function
 
@@ -270,8 +262,9 @@ Module Main
         Dim properties As ArrayList
         Dim taggedValue As EA.TaggedValue
         Dim elementProperty As ArchiProperty
+        Dim archiPropertyArray As ArrayList
+
         Dim msg As String = Nothing
-        Dim s As String
 
         properties = archiProperties(elementArchi.ID)
         If Not IsNothing(properties) Then
@@ -282,21 +275,15 @@ Module Main
                     'in case of reach the log console output will be slightly corrupted. Nothing else.
                     lLOG.Error("Tagged Value with Archi ID " + elementProperty.ID + " not created: " + (taggedValue.GetLastError))
                 Else
-                    'store encoded ARCHI ID into tagvalue notes
-                    s = taggedValue.Notes 'is empty
-                    s = s + Replace(ArchiConstants.encodeProperty, ArchiConstants.encodePropertyParameter, elementProperty.ID)
-                    taggedValue.Notes = s
                     If Not taggedValue.Update() Then
                         'TODO: should be in string array and returned as ususally. But currently function returns only one string
                         'in case of reach the log console output will be slightly corrupted. Nothing else.
                         lLOG.Error("Tagged Value with Archi ID " + elementProperty.ID + " not created: " + (taggedValue.GetLastError))
                         'store Sparx EA IDs into Archi property
                     End If
-                    'Again diff between TaggedValues for element and connector
+                    'xreference
                     elementProperty.FK = taggedValue.PropertyGUID
                     elementProperty.FK2 = taggedValue.PropertyID
-                    'TODO:create and encode into corresponden property in archiProperties into documentation
-                    '
                 End If
             Next
         Else
@@ -304,7 +291,13 @@ Module Main
         End If
         'add reference to ARCHI model
         taggedValue = elementEA.TaggedValues.AddNew(ArchiConstants.taggedValueArchiID, elementArchi.ID)
-        taggedValue.Update()
+        If Not taggedValue.Update() Then
+            lLOG.Error("xreference tagged value for archi element: " + elementArchi.ToString + " in Sparx EA not created due to: " + taggedValue.GetLastError)
+        End If
+        'addd reference to EA model. create corresponding property in archiProperties for future sync
+        elementProperty = New ArchiProperty("", elementArchi.ID, EAConstants.taggedValueEAID, elementEA.ElementGUID, ArchiConstants.PropertyType.propertyTypeForeignKey)
+        archiPropertyArray = archiProperties.Item(elementArchi.ID)
+        archiPropertyArray.Add(elementProperty)
         Return msg
     End Function
     Sub InitApp(ByRef sArgs As String())

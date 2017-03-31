@@ -1,7 +1,8 @@
 ﻿Public Class EAConstants
     Public Const activeXEA = "EA.App"
-    Public Const encodePropertyParameter = "%s" '%s is replaceable parameter
-    Public Const encodeProperty = "{ARCHIPROPID:" + encodePropertyParameter + ":}"
+    'DEPRECATED Public Const encodePropertyParameter = "%s" '%s is replaceable parameter
+    'DEPRECATED Public Const encodeProperty = "{ARCHIPROPID:" + encodePropertyParameter + ":}"
+    Public Const taggedValueEAID = "~EA_ID~"
     Public Const metatypeArchimatePrefix = "ArchiMate3::"
     Public Const stereotypeArchimatePrefix = "ArchiMate_"
 

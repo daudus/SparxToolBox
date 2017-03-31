@@ -45,7 +45,7 @@ Public Class ArchiProperty
     End Sub
 
     Public Overrides Function ToStringArrayCSV() As String()
-        Dim s() As String = {ID, Key, Value}
+        Dim s() As String = {Item, Key, Value}
         Return s
     End Function
 

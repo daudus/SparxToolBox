@@ -1,11 +1,11 @@
 ﻿Public Class ArchiConstants
-    'The name of property in foreign model for xreferrence purpose
+    'The name of property in foreign model for xreference purpose
     Public Const taggedValueArchiID = "ARCHI_ID"
     Public Const csvDelimiter = ","
     Public Const csvQualifier = """"
     Public Shared ReadOnly columsMappedElementsFileARCHI As String() = {"ID", "Type", "Name", "Documentation"}
-    Public Const encodePropertyParameter = "%s" '%s is replaceable parameter
-    Public Const encodeProperty = "{ARCHIPROPID:" + encodePropertyParameter + ":}"
+    'DEPRECATED Public Const encodePropertyParameter = "%s" '%s is replaceable parameter
+    'SEPRECATED Public Const encodeProperty = "{ARCHIPROPID:" + encodePropertyParameter + ":}"
     Public Const propertyEAGUID = "EAGUID"
     Public Const propertyEAID = "EAGUID"
     Public Const typeModel = "ArchimateModel"

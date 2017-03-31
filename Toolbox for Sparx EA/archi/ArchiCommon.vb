@@ -112,7 +112,6 @@
         LoadRelationsFileARCHI = mappedRelationsFileARCHI
         lLOG.Info("loadRelationsFileARCHI finished")
     End Function
-    'TODO: include somehow --into properties ??? -- IDs from EA also!
     'TODO: Ignore add record for model. Is it bad approach?
     Function SaveElementsFileARCHI(ByRef columsMappedElementsFileARCHI As String(), ByRef archiElements As Hashtable) As String
         Dim msg As String = Nothing
@@ -136,8 +135,7 @@
             spin.Turn()
             elementArchi = archiElements(key)
             stLine.Clear()
-            'TODO:the same order as in input parameter in this function?
-            stLine = _mappedCSVRow(elementArchi.toStringArray)
+            stLine = _mappedCSVRow(elementArchi.ToStringArrayCSV)
             objWriter.Write(stLine.ToString)
             'TODO: If value contains comma in the value then you have to perform this opertions
             'Dim append = If(_Msg.Contains(","), String.Format("""{0}""", _Msg), _Msg)
@@ -151,12 +149,78 @@
         Return msg
     End Function
     Function SaveRelationsFileARCHI(ByRef columsMappedRelationsFileARCHI As String(), ByRef archiRelations As Hashtable)
+        Dim msg As String = Nothing
+        Dim key As String
+        Dim spin As ConsoleSpiner
+        Dim keys As ICollection
+        Dim relationArchi As ArchiRelation
+        Dim stLine As Text.StringBuilder
+
+        'TODO: try catch
+        Dim objWriter As IO.StreamWriter = IO.File.CreateText(My.Settings.ArchiImportDirectory & My.Settings.ArchiExportFilePrefix & My.Settings.ArchiImportFileRelations)
+
         lLOG.Info("saveRelationsFileARCHI started")
+        keys = archiRelations.Keys
+        spin = New ConsoleSpiner(keys.Count, 1)
+        'columns names
+        stLine = _mappedCSVRow(columsMappedRelationsFileARCHI)
+        objWriter.Write(stLine.ToString)
+        objWriter.Write(Environment.NewLine)
+        For Each key In keys
+            spin.Turn()
+            relationArchi = archiRelations(key)
+            stLine.Clear()
+            stLine = _mappedCSVRow(relationArchi.ToStringArrayCSV)
+            objWriter.Write(stLine.ToString)
+            'TODO: If value contains comma in the value then you have to perform this opertions
+            'Dim append = If(_Msg.Contains(","), String.Format("""{0}""", _Msg), _Msg)
+            'stLine = String.Format("{0}{1},", stLine, append)
+            objWriter.Write(Environment.NewLine)
+        Next key
+        objWriter.Close()
+        stLine = Nothing
+        spin.Finish()
         lLOG.Info("saveRelationsFileARCHI finished")
+        Return msg
     End Function
     Function SavePropertiesFileARCHI(ByRef columsMappedPropertiesFileARCHI As String(), ByRef archiProperties As Hashtable)
+        Dim msg As String = Nothing
+        Dim key As String
+        Dim spin As ConsoleSpiner
+        Dim keys As ICollection
+        Dim propertyArchi As ArchiProperty
+        Dim stLine As Text.StringBuilder
+        Dim archiPropertyArray As ArrayList
+
+
+        'TODO: try catch
+        Dim objWriter As IO.StreamWriter = IO.File.CreateText(My.Settings.ArchiImportDirectory & My.Settings.ArchiExportFilePrefix & My.Settings.ArchiImportFileProperties)
+
         lLOG.Info("savePropertiesFileARCHI started")
+        keys = archiProperties.Keys
+        spin = New ConsoleSpiner(keys.Count, 1)
+        'columns names
+        stLine = _mappedCSVRow(columsMappedPropertiesFileARCHI)
+        objWriter.Write(stLine.ToString)
+        objWriter.Write(Environment.NewLine)
+        For Each key In keys
+            spin.Turn()
+            archiPropertyArray = archiProperties(key)
+            For Each propertyArchi In archiPropertyArray
+                stLine.Clear()
+                stLine = _mappedCSVRow(propertyArchi.ToStringArrayCSV)
+                objWriter.Write(stLine.ToString)
+                'TODO: If value contains comma in the value then you have to perform this opertions
+                'Dim append = If(_Msg.Contains(","), String.Format("""{0}""", _Msg), _Msg)
+                'stLine = String.Format("{0}{1},", stLine, append)
+                objWriter.Write(Environment.NewLine)
+            Next propertyArchi
+        Next key
+        objWriter.Close()
+        stLine = Nothing
+        spin.Finish()
         lLOG.Info("savePropertiesFileARCHI finished")
+        Return msg
     End Function
     Private Function _mappedCSVRowArray(columns As String()) As String()
         Dim stl(columns.Length) As String
