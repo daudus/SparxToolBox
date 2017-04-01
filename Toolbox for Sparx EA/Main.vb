@@ -23,6 +23,8 @@ Module Main
     Dim Repository As EA.Repository
     Dim Package As EA.Package
 
+    Dim TimeStampD As DateTime
+    Dim TimeStampS As String
     Dim mappedElementsFileARCHI As New Hashtable 'TODO: use dictionary. Dim peopleHashtable As New Dictionary(Of String, Person)
     Dim columsMappedElementsFileARCHI As String()
     Dim mappedPropertiesFileARCHI As New Hashtable
@@ -32,57 +34,60 @@ Module Main
     Dim appConfig As AppConfig
 
     Sub Main(ByVal sArgs As String())
+        TimeStampD = DateTime.Now
+        TimeStampS = TimeStampD.ToString("o")
         Try
             'inits app by command line parameters
-            initApp(sArgs)
+            InitApp(sArgs)
         Catch ex As Exception
             lLOG.Fatal("Fatal Error occured. Can not continue due to: " + ex.Message)
-            closeApp()
+            CloseApp()
             Exit Sub
         End Try
         'gets the Sparx EA application reference
-        EAapp = getApp()
+        EAapp = GetApp()
         If IsNothing(EAapp) Then
             lLOG.Fatal("Sparx EA cannot start")
-            closeApp()
+            CloseApp()
             Exit Sub
         End If
         ' ... and the proper repository
-        Repository = getRepository(EAapp)
+        Repository = GetRepository(EAapp)
         If IsNothing(Repository) Then
             lLOG.Fatal("Sparx EA has to have opened any repository")
-            closeApp()
+            CloseApp()
             Exit Sub
         End If
         'Call ConnectorTest(Repository)
         ' ... and the proper model
-        Model = getModel(Repository)
+        Model = GetModel(Repository)
         If IsNothing(Model) Then
             lLOG.Fatal("Sparx EA has to have model with given name: " + My.Settings.SparxEATargetRepostoryModelArchiImported)
-            closeApp()
+            CloseApp()
             Exit Sub
         End If
         ' ... and the proper package
-        Package = getPackageFromModel(Model)
+        Package = GetPackageFromModel(Model)
         If IsNothing(Package) Then
             lLOG.Fatal("Sparx EA has to have repository with given name: " + My.Settings.SparxEATargetRepostoryPackageArchiImported)
-            closeApp()
+            CloseApp()
             Exit Sub
         End If
 
         'read and map properties from ARCHI export
-        mappedPropertiesFileARCHI = loadPropertiesFileARCHI()
+        mappedPropertiesFileARCHI = LoadPropertiesFileARCHI()
         'read and map relations from ARCHI export
-        mappedRelationsFileARCHI = loadRelationsFileARCHI()
+        mappedRelationsFileARCHI = LoadRelationsFileARCHI()
 
         'read and map elements from ARCHI export
         'has to be last; after properties and relations!
-        mappedElementsFileARCHI = loadElementsFileARCHI()
+        mappedElementsFileARCHI = LoadElementsFileARCHI()
         columsMappedElementsFileARCHI = ArchiElement.GetFieldNamesCSV
         columsMappedPropertiesFileARCHI = ArchiProperty.GetFieldNamesCSV
         columsMappedrelationsFileARCHI = ArchiRelation.GetFieldNamesCSV
         CreateElementsInEA(Package, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
         CreateRelationsInEA(Repository, mappedRelationsFileARCHI, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
+        CreateDiagram(Repository, Package, "This is testing name at " & TimeStampS, "This is testing notes at " & TimeStampS)
         SaveElementsFileARCHI(columsMappedElementsFileARCHI, mappedElementsFileARCHI)
         SaveRelationsFileARCHI(columsMappedrelationsFileARCHI, mappedRelationsFileARCHI)
         SavePropertiesFileARCHI(columsMappedPropertiesFileARCHI, mappedPropertiesFileARCHI)
