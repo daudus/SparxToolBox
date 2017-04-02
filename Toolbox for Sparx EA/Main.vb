@@ -13,6 +13,7 @@
 'TODO: support diagrams
 'TODO: support twoway update ARCHI<->SPARXEA
 'TODO: composition needs to be fixed  - SourceIsAggregate=2. Direction = Unspecified. Still actual?
+'TODO: create Archi test model with all fatures of Archimate3 and test me with it
 Option Explicit On
 
 <Assembly: log4net.Config.XmlConfigurator(ConfigFile:="log4net.xml", Watch:=True)>
@@ -139,16 +140,17 @@ Module Main
                     Else
                         With connectorEA
                             'TODO: for Archimate_Composition.    
-                            '.Direction = "Unspecified"
                             '.SourceIsAggregate=2
-                            If stereotype = EAConstants.stereotypeRelationComposition Then
+                            If stereotype = (EAConstants.stereotypeArchimatePrefix & Archimate3.typeRelationComposition) Then
                                 Dim i As Integer
                                 i = .CustomProperties.Count
                                 i = .Properties.Count
+                                .Direction = EAConstants.connectorDirectionUnspecified
+                            Else
+                                .Direction = EAConstants.connectorDirectionSourceDestination
                             End If
                             .Stereotype = EAConstants.metatypeArchimatePrefix & stereotype
                             .Notes = relationArchi.Documentation
-                            .Direction = EAConstants.connectorDirectionSourceDestination
                             'add Tagged Values
                             msg = _addTaggedValuesConnector(connectorEA, relationArchi, archiProperties)
                             If Not IsNothing(msg) Then listMsgDebug.Add(msg)

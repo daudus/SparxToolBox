@@ -116,6 +116,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="archimate\Archimate3.vb" />
     <Compile Include="archi\ArchiClasses.vb" />
     <Compile Include="archi\ArchiCommon.vb" />
     <Compile Include="archi\ArchiConstants.vb" />

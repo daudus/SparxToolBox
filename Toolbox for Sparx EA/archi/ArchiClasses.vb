@@ -15,7 +15,6 @@
     End Function
 End Class
 
-
 Public Class ArchiRelation
     Inherits Relation
 
@@ -51,5 +50,17 @@ Public Class ArchiProperty
 
     Public Shared Shadows Function GetFieldNamesCSV() As String()
         Return ArchiTagCSVFieldNames
+    End Function
+End Class
+
+Public Class ArchiModel(Of ArchiElement, ArchiRelation, ArchiProperty)
+    Inherits ModelMEM(Of ArchiElement, ArchiRelation, ArchiProperty)
+
+    Public Overrides Function ImportFromFiles(directory As String, files() As String, type As String) As Object
+        Throw New NotImplementedException()
+    End Function
+
+    Public Overrides Function ExportToFiles(directory As String, files() As String, type As String) As Object
+        Throw New NotImplementedException()
     End Function
 End Class

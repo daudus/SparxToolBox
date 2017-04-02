@@ -252,21 +252,53 @@ Public MustInherit Class Tag
 End Class
 
 
-Public MustInherit Class Model(Of tElement, tRelation, tTag)
+'represents memory representation of the model.
+Public MustInherit Class ModelMEM(Of tElementMEM, tRelationMEM, tTagMEM)
 
-    ReadOnly Property Elements As Dictionary(Of String, tElement)
-    ReadOnly Property Relations As Dictionary(Of String, tRelation)
-    ReadOnly Property Tags As Dictionary(Of String, tTag)
+    ReadOnly Property Elements As Dictionary(Of String, tElementMEM)
+    ReadOnly Property Relations As Dictionary(Of String, tRelationMEM)
+    ReadOnly Property Tags As Dictionary(Of String, tTagMEM)
 
     Sub New()
-        Elements = New Dictionary(Of String, tElement)
-        Relations = New Dictionary(Of String, tRelation)
-        Tags = New Dictionary(Of String, tTag)
+        Elements = New Dictionary(Of String, tElementMEM)
+        Relations = New Dictionary(Of String, tRelationMEM)
+        Tags = New Dictionary(Of String, tTagMEM)
     End Sub
 
-    Sub Clear()
+    Overridable Sub Clear()
         Elements.Clear()
         Relations.Clear()
         Tags.Clear()
     End Sub
+
+    'type - to distinguish between various types of exports - CSV, XML, ....
+    Public MustOverride Function ImportFromFiles(directory As String, files() As String, type As String)
+
+    'type - to distinguish between various types of exports - CSV, XML, ....
+    Public MustOverride Function ExportToFiles(directory As String, files() As String, type As String)
+
 End Class
+'represents memory representation of the model.
+'is able to manipulate with COM model  - i.e. trough API with runnig native applicaiton maintaining the model
+'
+Public MustInherit Class ModelCOM(Of tApplicationCOM, tRepositoryCOM, tElementMEM, tRelationMEM, tTagMEM)
+    Inherits ModelMEM(Of tElementMEM, tRelationMEM, tTagMEM)
+
+    ReadOnly Property AppCOM As tApplicationCOM 'should be cleared ....
+    ReadOnly Property RepositoryCOM As tRepositoryCOM
+
+    Sub New()
+        MyBase.New()
+    End Sub
+
+    Overrides Sub Clear()
+        MyBase.Clear()
+    End Sub
+
+    'supports various type of repositories
+    'repository - some identifier, e.g. filename
+    'params  - various parameters necessary to open the repository
+    'Initiates class-global varibles appCOM and repositoryCOM
+    Public MustOverride Sub GetApplicationCOM(repository As String, params As Dictionary(Of String, String))
+End Class
+
