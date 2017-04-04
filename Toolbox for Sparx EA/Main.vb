@@ -88,6 +88,7 @@ Module Main
         CreateElementsInEA(Package, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
         CreateRelationsInEA(Repository, mappedRelationsFileARCHI, mappedElementsFileARCHI, mappedPropertiesFileARCHI)
         CreateDiagram(Repository, Package, "This is testing name at " & TimeStampS, "This is testing notes at " & TimeStampS)
+        DoRecursionOwns(GetPackage("Recursion", Model), RecursionOwns.SidePatternEnd)
         SaveElementsFileARCHI(columsMappedElementsFileARCHI, mappedElementsFileARCHI)
         SaveRelationsFileARCHI(columsMappedrelationsFileARCHI, mappedRelationsFileARCHI)
         SavePropertiesFileARCHI(columsMappedPropertiesFileARCHI, mappedPropertiesFileARCHI)
